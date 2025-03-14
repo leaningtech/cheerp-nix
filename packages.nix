@@ -16,7 +16,7 @@ let
   };
   prod = {
     conf = {
-      build = "dev";
+      build = "prod";
       inherit doCheck;
     };
   };
