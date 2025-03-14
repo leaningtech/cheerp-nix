@@ -42,15 +42,28 @@ let
   };
   devShells = {
     default = pkgs.mkShell {
+      CHEERP_CCACHE=1;
+      CHEERP_CHECK=0;
       packages = [
         pkgs.just
         npins
       ];
     };
-    cheerp-dev = pkgs.mkShell {
-      packages = with packages.prod; [
+    compiler-dev = pkgs.mkShell.override { stdenv = ccacheClangStdenv; } {
+      CHEERP_CCACHE=1;
+      CHEERP_CHECK=0;
+      CCACHE_NOLINK=1;
+      shellHook = ''
+        export CCACHE_BASEDIR=$PWD
+      '';
+      inputsFrom = with packages; [
+        dev.cheerp-compiler
+      ];
+    };
+    cheerp = pkgs.mkShell {
+      packages = with packages; [
         cheerp
-        cheerpPkgs.cheerp-clangd
+        cheerp-clangd
       ];
     };
   };

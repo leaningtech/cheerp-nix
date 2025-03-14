@@ -5,24 +5,25 @@
 , ...
 }@inputs:
 let
-  test = {
-    conf.build = "test";
-    stdenv = ccacheClangStdenv;
-  };
+  useCcache = (builtins.getEnv "CHEERP_CCACHE") == "1";
+  doCheck = (builtins.getEnv "CHEERP_CHECK") != "0";
+  stdenv = if useCcache then ccacheClangStdenv else clangStdenv;
   dev = {
-    conf.build = "dev";
-    stdenv = ccacheClangStdenv;
+    conf = {
+      build = "dev";
+      inherit doCheck;
+    };
   };
   prod = {
-    conf.build = "prod";
-    stdenv = clangStdenv;
+    conf = {
+      build = "dev";
+      inherit doCheck;
+    };
   };
-  myScope = env: lib.makeScope lib.callPackageWith (self: pkgs // inputs // env);
-  cheerpTest = (myScope test).callPackage ./cheerp {};
+  myScope = env: lib.makeScope lib.callPackageWith (self: pkgs // inputs // { inherit stdenv; } // env);
   cheerpDev = (myScope dev).callPackage ./cheerp {};
   cheerpProd = (myScope prod).callPackage ./cheerp {};
 in
 cheerpProd // {
-    test = cheerpTest;
     dev = cheerpDev;
 }

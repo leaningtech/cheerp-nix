@@ -18,7 +18,7 @@
 }:
 let
   build-type = if conf.build == "prod" then "Release" else "Debug";
-  doCheck = conf.build == "test";
+  doCheck = conf.doCheck;
 in
 stdenv.mkDerivation {
   pname = if buildClangd then "cheerp-clangd" else "cheerp-compiler";
