@@ -1,0 +1,86 @@
+{
+  "pins": {
+    "cheerp-compiler": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "leaningtech",
+        "repo": "cheerp-compiler"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "973990da1fc59a238e41b9f722729aef39711495",
+      "url": "https://github.com/leaningtech/cheerp-compiler/archive/973990da1fc59a238e41b9f722729aef39711495.tar.gz",
+      "hash": "1r44ar9mgaw4fks56936w4j1pia8wdpmbz5gdf57m2p5smchrkm1"
+    },
+    "cheerp-libs": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "leaningtech",
+        "repo": "cheerp-libs"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "3e4ba90488484004354c3f88c4e6acfef9bf927a",
+      "url": "https://github.com/leaningtech/cheerp-libs/archive/3e4ba90488484004354c3f88c4e6acfef9bf927a.tar.gz",
+      "hash": "0iwm3fji0crapzpv6qf8y7cmpmsmappcw0jxd850xpj7hfcjvakg"
+    },
+    "cheerp-musl": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "leaningtech",
+        "repo": "cheerp-musl"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "3500792a3cfdcbb04ad9d217efca44c48b32ba1f",
+      "url": "https://github.com/leaningtech/cheerp-musl/archive/3500792a3cfdcbb04ad9d217efca44c48b32ba1f.tar.gz",
+      "hash": "0i830n0nvwk2vrr88kwp9c2d0an0ivcgdzpnmdf2wif6nm10r2z1"
+    },
+    "cheerp-utils": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "leaningtech",
+        "repo": "cheerp-utils"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "13e6e8157f36c2f077c4f6435f003a53b46f82db",
+      "url": "https://github.com/leaningtech/cheerp-utils/archive/13e6e8157f36c2f077c4f6435f003a53b46f82db.tar.gz",
+      "hash": "0wn33xbbfr27a2h07jx6a8pvvgqprra6cb4kiwz0qzgv9hi8080l"
+    },
+    "nixpkgs": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nixos",
+        "repo": "nixpkgs"
+      },
+      "branch": "nixos-24.05",
+      "submodules": false,
+      "revision": "b134951a4c9f3c995fd7be05f3243f8ecd65d798",
+      "url": "https://github.com/nixos/nixpkgs/archive/b134951a4c9f3c995fd7be05f3243f8ecd65d798.tar.gz",
+      "hash": "0zydsqiaz8qi4zd63zsb2gij2p614cgkcaisnk11wjy3nmiq0x1s"
+    },
+    "npins": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "andir",
+        "repo": "npins"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "submodules": false,
+      "version": "0.3.0",
+      "revision": "6cc1930e703698487bd703258126435a536ca492",
+      "url": "https://api.github.com/repos/andir/npins/tarball/0.3.0",
+      "hash": "1450ddp5gm3n5jvg64v9rc2jvf9za79fv4dmac5m8d47l0iblfcx"
+    }
+  },
+  "version": 5
+}
