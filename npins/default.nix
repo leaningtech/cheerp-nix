@@ -24,6 +24,11 @@ let
   concatMapStrings = f: list: concatStrings (map f list);
   concatStrings = builtins.concatStringsSep "";
 
+  # Case conversion utilities.
+  lowerChars = stringToCharacters "abcdefghijklmnopqrstuvwxyz";
+  upperChars = stringToCharacters "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  toUpper = builtins.replaceStrings lowerChars upperChars;
+
   # If the environment variable ${name}_PATH is set, then use
   # the path directly as opposed to the fetched source.
   # (Taken from Niv for compatibility)
@@ -31,7 +36,7 @@ let
     name: path:
     let
       envVarName = "${saneName}_PATH";
-      saneName = stringAsChars (c: if (builtins.match "[a-zA-Z0-9]" c) == null then "_" else c) name;
+      saneName = toUpper (stringAsChars (c: if (builtins.match "[a-zA-Z0-9]" c) == null then "_" else c) name);
       ersatz = builtins.getEnv envVarName;
     in
     if ersatz == "" then
