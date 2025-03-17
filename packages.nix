@@ -5,8 +5,19 @@
 , ...
 }@inputs:
 let
-  useCcache = (builtins.getEnv "CHEERP_CCACHE") == "1";
-  doCheck = (builtins.getEnv "CHEERP_CHECK") != "0";
+  getEnvBool = envName: descr: default:
+    let
+      envVal = builtins.getEnv envName;
+      boolVal = envVal == "1";
+    in
+    if boolVal == default
+    then
+      default
+    else
+      builtins.trace "Overriding option \"${descr}\" with \"${envVal}\" due to set \"${envName}\"" boolVal;
+
+  useCcache = getEnvBool "CHEERP_CCACHE" "Ccache build" false;
+  doCheck = getEnvBool "CHEERP_CHECK" "Run checks" true;
   stdenv = if useCcache then ccacheClangStdenv else clangStdenv;
   dev = {
     conf = {
@@ -21,9 +32,9 @@ let
     };
   };
   myScope = env: lib.makeScope lib.callPackageWith (self: pkgs // inputs // { inherit stdenv; } // env);
-  cheerpDev = (myScope dev).callPackage ./cheerp {};
-  cheerpProd = (myScope prod).callPackage ./cheerp {};
+  cheerpDev = (myScope dev).callPackage ./cheerp { };
+  cheerpProd = (myScope prod).callPackage ./cheerp { };
 in
 cheerpProd // {
-    dev = cheerpDev;
+  dev = cheerpDev;
 }
