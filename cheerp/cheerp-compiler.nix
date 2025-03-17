@@ -78,6 +78,8 @@ stdenv.mkDerivation {
     -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld \
     -DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=lld \
     -DCMAKE_MODULE_LINKER_FLAGS=-fuse-ld=lld \
+    -DLLVM_USE_RELATIVE_PATHS_IN_DEBUG_INFO=ON \
+    -DLLVM_USE_RELATIVE_PATHS_IN_FILES=ON \
     -DLLVM_INCLUDE_TESTS=${if doCheck then "ON" else "OFF"} \
     -C llvm/CheerpCmakeConf.cmake -B build -S llvm
     cd build
