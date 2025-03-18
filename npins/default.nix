@@ -33,14 +33,14 @@ let
   # the path directly as opposed to the fetched source.
   # (Taken from Niv for compatibility)
   mayOverride =
-    name: path:
+    name: spec:
     let
       envVarName = "${saneName}_PATH";
       saneName = toUpper (stringAsChars (c: if (builtins.match "[a-zA-Z0-9]" c) == null then "_" else c) name);
       ersatz = builtins.getEnv envVarName;
     in
     if ersatz == "" then
-      path
+      spec
     else
       # this turns the string into an actual Nix path (for both absolute and
       # relative paths)
@@ -69,7 +69,7 @@ let
         else
           builtins.throw "Unknown source type ${spec.type}";
     in
-    spec // { outPath = mayOverride name path; };
+    mayOverride name (spec // { outPath = path; });
 
   mkGitSource =
     {
