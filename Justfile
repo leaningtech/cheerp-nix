@@ -20,4 +20,4 @@ update: fetch-cheerp fetch-nixpkgs
 build-all:
 	rm -rf roots
 	mkdir roots
-	nom build -f . packages.test.cheerp packages.test.unit-tests packages.dev.cheerp packages.cheerp packages.cheerp-clangd --out-link roots/result
+	nom build -f . packages.dev.cheerp packages.dev.unit-tests packages.cheerp packages.cheerp-clangd --out-link roots/result
