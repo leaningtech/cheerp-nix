@@ -42,17 +42,17 @@ let
   };
   devShells = {
     default = pkgs.mkShell {
-      CHEERP_CCACHE=1;
-      CHEERP_CHECK=0;
+      CHEERP_CCACHE = 1;
+      CHEERP_CHECK = 0;
       packages = [
         pkgs.just
         npins
       ];
     };
     compiler-dev = pkgs.mkShell.override { stdenv = ccacheClangStdenv; } {
-      CHEERP_CCACHE=1;
-      CHEERP_CHECK=0;
-      CCACHE_NOLINK=1;
+      CHEERP_CCACHE = 1;
+      CHEERP_CHECK = 0;
+      CCACHE_NOHASHDIR=1;
       shellHook = ''
         export CCACHE_BASEDIR=$PWD
       '';
