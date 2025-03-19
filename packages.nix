@@ -5,29 +5,36 @@
 , ...
 }@inputs:
 let
-  getEnvBool = envName: descr: default:
+  getEnvString = envName: descr: default:
     let
       envVal = builtins.getEnv envName;
-      boolVal = envVal == "1";
     in
-    if boolVal == default
+    if envVal == "" || envVal == default
     then
       default
     else
-      builtins.trace "Overriding option \"${descr}\" with \"${envVal}\" due to set \"${envName}\"" boolVal;
+      builtins.trace "Overriding option \"${descr}\" with \"${envVal}\" due to set \"${envName}\"" envVal;
+  getEnvBool = envName: descr: default:
+    let
+      str = getEnvString envName descr (toString default);
+    in
+    str == "1";
 
   useCcache = getEnvBool "CHEERP_CCACHE" "Ccache build" false;
   doCheck = getEnvBool "CHEERP_CHECK" "Run checks" true;
+  localCheerp = getEnvString "CHEERP_LOCAL_PATH" "Path to local cheerp-compiler build" "";
   stdenv = if useCcache then ccacheClangStdenv else clangStdenv;
   dev = {
     conf = {
       build = "dev";
+      inherit localCheerp;
       inherit doCheck;
     };
   };
   prod = {
     conf = {
       build = "prod";
+      inherit localCheerp;
       inherit doCheck;
     };
   };
