@@ -42,8 +42,6 @@ let
   };
   devShells = {
     default = pkgs.mkShell {
-      CHEERP_CCACHE = 1;
-      CHEERP_CHECK = 0;
       packages = [
         pkgs.just
         npins
