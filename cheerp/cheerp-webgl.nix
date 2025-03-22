@@ -1,9 +1,4 @@
-{ lib
-, stdenv
-, cheerp
-, sources
-, filterSrc
-}:
+{ lib, stdenv, cheerp, sources, filterSrc }:
 
 stdenv.mkDerivation {
   pname = "cheerp-webgl";
@@ -11,16 +6,13 @@ stdenv.mkDerivation {
 
   src = filterSrc {
     root = sources.cheerp-libs;
-    include = [
-      "webgles"
-    ];
+    include = [ "webgles" ];
   };
   sourceRoot = "source/webgles";
 
   nativeBuildInputs = [ ];
 
-  configurePhase = ''
-  '';
+  configurePhase = "";
   buildPhase = ''
     make INSTALL_PREFIX=$out CHEERP_PREFIX=${cheerp} all
   '';

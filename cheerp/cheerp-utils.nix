@@ -1,11 +1,4 @@
-{ lib
-, stdenv
-, cmake
-, ninja
-, cheerp-compiler
-, sources
-, filterSrc
-}:
+{ lib, stdenv, cmake, ninja, cheerp-compiler, sources, filterSrc }:
 
 stdenv.mkDerivation {
   pname = "cheerp-utils";
@@ -13,13 +6,7 @@ stdenv.mkDerivation {
 
   src = filterSrc {
     root = sources.cheerp-utils;
-    include = [
-      "CMakeLists.txt"
-      "include"
-      "tools"
-      "scripts"
-      "tests"
-    ];
+    include = [ "CMakeLists.txt" "include" "tools" "scripts" "tests" ];
   };
 
   nativeBuildInputs = [ cmake ninja ];

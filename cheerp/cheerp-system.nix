@@ -1,29 +1,17 @@
-{ lib
-, stdenv
-, cmake
-, ninja
-, cheerp
-, wasm
-, sources
-, filterSrc
-}:
+{ lib, stdenv, cmake, ninja, cheerp, wasm, sources, filterSrc }:
 
 let
   name = if wasm then "cheerp-system-wasm" else "cheerp-system-js";
-  toolchain = if wasm then "CheerpWasmToolchain.cmake" else "CheerpToolchain.cmake";
-in
-stdenv.mkDerivation {
+  toolchain =
+    if wasm then "CheerpWasmToolchain.cmake" else "CheerpToolchain.cmake";
+in stdenv.mkDerivation {
   pname = name;
   version = "master";
 
   src = filterSrc {
     root = sources.cheerp-libs;
-    include = [
-      "system"
-    ];
-    exclude = [
-      "system/build"
-    ];
+    include = [ "system" ];
+    exclude = [ "system/build" ];
   };
   sourceRoot = "source/system";
 

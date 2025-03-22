@@ -1,11 +1,4 @@
-{ lib
-, stdenv
-, python3
-, nodejs
-, cheerp
-, sources
-, filterSrc
-}:
+{ lib, stdenv, python3, nodejs, cheerp, sources, filterSrc }:
 
 stdenv.mkDerivation {
   pname = "cheerp-test";
@@ -13,15 +6,12 @@ stdenv.mkDerivation {
 
   src = filterSrc {
     root = sources.cheerp-utils;
-    include = [
-      "tests"
-    ];
+    include = [ "tests" ];
   };
 
   nativeBuildInputs = [ python3 nodejs cheerp ];
 
-  configurePhase = ''
-  '';
+  configurePhase = "";
   buildPhase = ''
     cd tests
     python3 run_tests.py -j $NIX_BUILD_CORES --all clang++ node

@@ -1,10 +1,4 @@
-{ lib
-, symlinkJoin
-, cheerp-compiler
-, cheerp-utils
-, libs
-, name? "cheerp"
-}:
+{ lib, symlinkJoin, cheerp-compiler, cheerp-utils, libs, name ? "cheerp" }:
 symlinkJoin {
   name = name;
   paths = [ cheerp-compiler cheerp-utils ] ++ libs;

@@ -1,15 +1,8 @@
-{ lib
-, stdenv
-, cmake
-, python3
-, cheerp
-, sources
-, filterSrc
-}:
+{ lib, stdenv, cmake, python3, cheerp, sources, filterSrc }:
 stdenv.mkDerivation {
   pname = "cheerp-asan";
   version = "master";
-  
+
   src = filterSrc {
     root = sources.cheerp-compiler;
     include = [

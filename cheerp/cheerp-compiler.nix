@@ -1,26 +1,9 @@
-{ lib
-, stdenv
-, cmake
-, llvmPackages
-, ninja
-, python3
-, libxml2
-, libffi
-, ncurses
-, zlib
-, zstd
-, which
-, libedit
-, filterSrc
-, sources
-, conf
-, buildClangd?false
-}:
+{ lib, stdenv, cmake, llvmPackages, ninja, python3, libxml2, libffi, ncurses
+, zlib, zstd, which, libedit, filterSrc, sources, conf, buildClangd ? false }:
 let
   build-type = if conf.build == "prod" then "Release" else "Debug";
   doCheck = conf.doCheck;
-in
-stdenv.mkDerivation {
+in stdenv.mkDerivation {
   pname = if buildClangd then "cheerp-clangd" else "cheerp-compiler";
   version = "${conf.build}-master";
 
@@ -28,26 +11,22 @@ stdenv.mkDerivation {
 
   src = filterSrc {
     root = sources.cheerp-compiler;
-    include = [
-      "clang"
-      "llvm"
-      "cmake"
-      "third-party"
-    ] ++ (if buildClangd then ["clang-tools-extra"] else []);
+    include = [ "clang" "llvm" "cmake" "third-party" ]
+      ++ (if buildClangd then [ "clang-tools-extra" ] else [ ]);
     exclude = if !doCheck then [
       "llvm/test"
       "llvm/unittests"
       "clang/test"
       "clang/unittests"
-    ] else [];
+    ] else
+      [ ];
   };
 
-  nativeBuildInputs = [ cmake ninja python3 llvmPackages.llvm llvmPackages.bintools ];
+  nativeBuildInputs =
+    [ cmake ninja python3 llvmPackages.llvm llvmPackages.bintools ];
   buildInputs = [ libxml2 libffi ];
   propagatedBuildInputs = [ ncurses zlib zstd libedit ];
-  nativeCheckInputs = [
-    which
-  ];
+  nativeCheckInputs = [ which ];
 
   postPatch = if doCheck then ''
     #remove some tests that don't work in a nix build. taken from nixpkgs
@@ -62,12 +41,15 @@ stdenv.mkDerivation {
     rm llvm/unittests/Support/Path.cpp
 
     rm clang/test/Modules/header-attribs.cpp
-  '' else "";
+  '' else
+    "";
 
   configurePhase = ''
     cmake \
     -DCMAKE_INSTALL_PREFIX=$out \
-    -DLLVM_ENABLE_PROJECTS="clang${if buildClangd then ";clang-tools-extra" else ""}" \
+    -DLLVM_ENABLE_PROJECTS="clang${
+      if buildClangd then ";clang-tools-extra" else ""
+    }" \
     -GNinja \
     -DCMAKE_BUILD_TYPE=${build-type} \
     -DCMAKE_COLOR_DIAGNOSTICS=ON \
@@ -92,7 +74,7 @@ stdenv.mkDerivation {
     ninja check-clang
   '';
   installPhase = ''
-	  ninja ${if buildClangd then "install-clangd" else "install-distribution"}
+    ninja ${if buildClangd then "install-clangd" else "install-distribution"}
   '';
 
   meta = with lib; {

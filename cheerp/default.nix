@@ -1,26 +1,13 @@
-{ lib
-, stdenv
-, mkShell
-, writeShellScriptBin
-, newScope
-, conf
-}:
+{ lib, stdenv, mkShell, writeShellScriptBin, newScope, conf }:
 lib.makeScope newScope (self:
-  let
-    callPackage = self.callPackage;
-  in
-  rec {
-    cheerp-compiler = callPackage ./cheerp-compiler.nix {
-      buildClangd = false;
-    };
+  let callPackage = self.callPackage;
+  in rec {
+    cheerp-compiler =
+      callPackage ./cheerp-compiler.nix { buildClangd = false; };
 
-    cheerp-clangd = callPackage ./cheerp-compiler.nix {
-      buildClangd = true;
-    };
+    cheerp-clangd = callPackage ./cheerp-compiler.nix { buildClangd = true; };
 
-    cheerp-utils = callPackage ./cheerp-utils.nix {
-      inherit cheerp-compiler;
-    };
+    cheerp-utils = callPackage ./cheerp-utils.nix { inherit cheerp-compiler; };
 
     cheerp-musl-js = callPackage ./cheerp-musl.nix {
       inherit cheerp-compiler;
@@ -31,12 +18,13 @@ lib.makeScope newScope (self:
       wasm = true;
     };
 
-    cheerpStage = { name?"cheerp", compiler? cheerp-compiler, libs }: callPackage ./cheerp.nix {
-      name = "${name}-${conf.build}";
-      cheerp-compiler = compiler;
-      inherit cheerp-utils;
-      inherit libs;
-    };
+    cheerpStage = { name ? "cheerp", compiler ? cheerp-compiler, libs }:
+      callPackage ./cheerp.nix {
+        name = "${name}-${conf.build}";
+        cheerp-compiler = compiler;
+        inherit cheerp-utils;
+        inherit libs;
+      };
 
     cheerp-nomusl = cheerpStage {
       name = "cheerp-compiler+utils";
@@ -45,7 +33,7 @@ lib.makeScope newScope (self:
 
     cheerp-noruntimes = cheerpStage {
       name = "cheerp-compiler+utils+musl";
-      libs = [ cheerp-musl-js cheerp-musl-wasm];
+      libs = [ cheerp-musl-js cheerp-musl-wasm ];
     };
 
     cheerp-runtimes-wasm = callPackage ./cheerp-runtimes.nix {
@@ -59,23 +47,44 @@ lib.makeScope newScope (self:
 
     cheerp-nolibs = cheerpStage {
       name = "cheerp-compiler+utils+musl+runtimes";
-      libs = [ cheerp-musl-js cheerp-musl-wasm cheerp-runtimes-js cheerp-runtimes-wasm ];
+      libs = [
+        cheerp-musl-js
+        cheerp-musl-wasm
+        cheerp-runtimes-js
+        cheerp-runtimes-wasm
+      ];
     };
 
     cheerp-webgl = callPackage ./cheerp-webgl.nix { cheerp = cheerp-nolibs; };
     cheerp-wasm = callPackage ./cheerp-wasm.nix { cheerp = cheerp-nolibs; };
-    cheerp-stdlibs-wasm = callPackage ./cheerp-stdlibs.nix { cheerp = cheerp-nolibs; wasm = true; };
-    cheerp-stdlibs-js = callPackage ./cheerp-stdlibs.nix { cheerp = cheerp-nolibs; wasm = false; };
-    cheerp-system-wasm = callPackage ./cheerp-system.nix { cheerp = cheerp-nolibs; wasm = true; };
-    cheerp-system-js = callPackage ./cheerp-system.nix { cheerp = cheerp-nolibs; wasm = false; };
+    cheerp-stdlibs-wasm = callPackage ./cheerp-stdlibs.nix {
+      cheerp = cheerp-nolibs;
+      wasm = true;
+    };
+    cheerp-stdlibs-js = callPackage ./cheerp-stdlibs.nix {
+      cheerp = cheerp-nolibs;
+      wasm = false;
+    };
+    cheerp-system-wasm = callPackage ./cheerp-system.nix {
+      cheerp = cheerp-nolibs;
+      wasm = true;
+    };
+    cheerp-system-js = callPackage ./cheerp-system.nix {
+      cheerp = cheerp-nolibs;
+      wasm = false;
+    };
 
     cheerp-noasan = cheerpStage {
       name = "cheerp-compiler+utils+musl+runtimes+libs";
       libs = [
-        cheerp-musl-js cheerp-musl-wasm
-        cheerp-runtimes-js cheerp-runtimes-wasm
-        cheerp-stdlibs-js cheerp-stdlibs-wasm
-        cheerp-system-wasm cheerp-system-js
+        cheerp-musl-js
+        cheerp-musl-wasm
+        cheerp-runtimes-js
+        cheerp-runtimes-wasm
+        cheerp-stdlibs-js
+        cheerp-stdlibs-wasm
+        cheerp-system-wasm
+        cheerp-system-js
         cheerp-webgl
         cheerp-wasm
       ];
@@ -83,11 +92,12 @@ lib.makeScope newScope (self:
 
     cheerp-asan = callPackage ./cheerp-asan.nix { cheerp = cheerp-noasan; };
 
-    cheerp-memprof = callPackage ./cheerp-memprof.nix { cheerp = cheerp-noasan;};
+    cheerp-memprof =
+      callPackage ./cheerp-memprof.nix { cheerp = cheerp-noasan; };
 
     cheerp-compiler-local = stdenv.mkDerivation {
       name = "cheerp-compiler-local";
-      phases = ["installPhase"];
+      phases = [ "installPhase" ];
       installPhase = ''
         mkdir -p $out/{bin,lib}
         ln -s ${conf.localCheerp}/lib/clang $out/lib/
@@ -101,12 +111,19 @@ lib.makeScope newScope (self:
       '';
     };
     cheerp = cheerpStage {
-      compiler = if conf.localCheerp == "" then cheerp-compiler else cheerp-compiler-local;
+      compiler = if conf.localCheerp == "" then
+        cheerp-compiler
+      else
+        cheerp-compiler-local;
       libs = [
-        cheerp-musl-js cheerp-musl-wasm
-        cheerp-runtimes-js cheerp-runtimes-wasm
-        cheerp-stdlibs-js cheerp-stdlibs-wasm
-        cheerp-system-wasm cheerp-system-js
+        cheerp-musl-js
+        cheerp-musl-wasm
+        cheerp-runtimes-js
+        cheerp-runtimes-wasm
+        cheerp-stdlibs-js
+        cheerp-stdlibs-wasm
+        cheerp-system-wasm
+        cheerp-system-js
         cheerp-webgl
         cheerp-wasm
         cheerp-asan
@@ -114,39 +131,23 @@ lib.makeScope newScope (self:
       ];
     };
 
-    unit-tests = callPackage ./cheerp-test.nix {
-      cheerp = cheerp;
-    };
+    unit-tests = callPackage ./cheerp-test.nix { cheerp = cheerp; };
 
     cheerp-proxy = writeShellScriptBin "cheerp" ''
       PATH=${cheerp}/bin/ exec "$@"
     '';
 
+    devShell = mkShell { packages = [ cheerp cheerp-clangd ]; };
 
-    devShell = mkShell {
-      packages = [
-        cheerp
-        cheerp-clangd
-      ];
-    };
-
-    cheerpPlatform = {
-      config = "cheerp-leaningtech-webbrowser-genericjs";
-    };
-    cheerpWasmPlatform = {
-      config = "cheerp-leaningtech-webbrowser-wasm";
-    };
-    cheerpWasiPlatform = {
-      config = "cheerp-leaningtech-wasi-wasm";
-    };
+    cheerpPlatform = { config = "cheerp-leaningtech-webbrowser-genericjs"; };
+    cheerpWasmPlatform = { config = "cheerp-leaningtech-webbrowser-wasm"; };
+    cheerpWasiPlatform = { config = "cheerp-leaningtech-wasi-wasm"; };
     mkGenericjs = callPackage ./stdenv.nix {
       inherit cheerpPlatform cheerpWasmPlatform cheerpWasiPlatform;
       inherit cheerp;
       hostPlatform = cheerpPlatform;
       targetPlatform = cheerpPlatform;
     };
-    shell = mkGenericjs {
-      name = "shell";
-    };
+    shell = mkGenericjs { name = "shell"; };
 
   })
