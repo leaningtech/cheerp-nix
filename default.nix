@@ -13,7 +13,7 @@ let
   npins = import sources.npins {
     inherit system;
   };
-  filterSrc' = import ./nix-filter.nix;
+  filterSrc' = import sources.nix-filter;
   filterSrc = { root, include ? [ ], exclude ? [ ] }:
     if builtins.isPath root then
       let

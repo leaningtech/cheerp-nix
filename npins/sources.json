@@ -52,6 +52,19 @@
       "url": "https://github.com/leaningtech/cheerp-utils/archive/20bf38bc6ac26293ecdcd0c99f7a08bf146b4c75.tar.gz",
       "hash": "08mb892ss8ixyi6pjncjq1zvskw43jyfbgafgy6k2zqqadlkjs35"
     },
+    "nix-filter": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "numtide",
+        "repo": "nix-filter"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "f7653272fd234696ae94229839a99b73c9ab7de0",
+      "url": "https://github.com/numtide/nix-filter/archive/f7653272fd234696ae94229839a99b73c9ab7de0.tar.gz",
+      "hash": "1jyqf9rnqnpscyxwv5p9kzznd3bsnjsh1q23wpmwmgdmykjac5m1"
+    },
     "nixpkgs": {
       "type": "Git",
       "repository": {
