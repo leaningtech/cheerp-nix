@@ -53,6 +53,9 @@ in stdenv.mkDerivation {
     -GNinja \
     -DCMAKE_BUILD_TYPE=${build-type} \
     -DCMAKE_COLOR_DIAGNOSTICS=ON \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_C_FLAGS="-Wno-gnu-line-marker" \
+    -DCMAKE_CXX_FLAGS="-Wno-gnu-line-marker" \
     -DCMAKE_C_FLAGS_RELEASE="-O2 -DNDEBUG" \
     -DCMAKE_CXX_FLAGS_RELEASE="-O2 -DNDEBUG -Wno-deprecated-declarations" \
     -DCMAKE_C_FLAGS_DEBUG="-O2" \
