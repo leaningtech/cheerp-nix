@@ -9,9 +9,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "d6c95ad9c84458733bb2e1968d656ed4accda48a",
-      "url": "https://github.com/leaningtech/cheerp-compiler/archive/d6c95ad9c84458733bb2e1968d656ed4accda48a.tar.gz",
-      "hash": "1zkgdjmjb3w4c77hz7m1nilj2sa4mx4licd9pn0qkyvakzwajzxf"
+      "revision": "3e2b701611fb4785ccf46615d1cf67b46425067c",
+      "url": "https://github.com/leaningtech/cheerp-compiler/archive/3e2b701611fb4785ccf46615d1cf67b46425067c.tar.gz",
+      "hash": "1v3242fi3qdrnl9nal0mq5chlwg4k92a0xzfsr0h5xx0pkkdii9p"
     },
     "cheerp-libs": {
       "type": "Git",
@@ -22,9 +22,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "3e4ba90488484004354c3f88c4e6acfef9bf927a",
-      "url": "https://github.com/leaningtech/cheerp-libs/archive/3e4ba90488484004354c3f88c4e6acfef9bf927a.tar.gz",
-      "hash": "0iwm3fji0crapzpv6qf8y7cmpmsmappcw0jxd850xpj7hfcjvakg"
+      "revision": "95493b3bb87702e61a2d221d16319ee2c87b6608",
+      "url": "https://github.com/leaningtech/cheerp-libs/archive/95493b3bb87702e61a2d221d16319ee2c87b6608.tar.gz",
+      "hash": "0r40r8aasbprjx9vc898ys9l97v8fn151kxmfrjj6xlm4vqj90zz"
     },
     "cheerp-musl": {
       "type": "Git",
@@ -35,9 +35,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "3500792a3cfdcbb04ad9d217efca44c48b32ba1f",
-      "url": "https://github.com/leaningtech/cheerp-musl/archive/3500792a3cfdcbb04ad9d217efca44c48b32ba1f.tar.gz",
-      "hash": "0i830n0nvwk2vrr88kwp9c2d0an0ivcgdzpnmdf2wif6nm10r2z1"
+      "revision": "77464ac5fffa6bce90defb8b02a66355f16084ac",
+      "url": "https://github.com/leaningtech/cheerp-musl/archive/77464ac5fffa6bce90defb8b02a66355f16084ac.tar.gz",
+      "hash": "0f0w8s6qi434g7lwy7c4fp52wp6imyzj9dw2z5jvlxls0syhrhsi"
     },
     "cheerp-utils": {
       "type": "Git",
