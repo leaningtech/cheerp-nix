@@ -1,7 +1,7 @@
 { lib, stdenv, python3, nodejs, cheerp, sources, filterSrc }:
 
 stdenv.mkDerivation {
-  pname = "cheerp-test";
+  pname = "cheerp-unit-tests";
   version = "master";
 
   src = filterSrc {
@@ -14,7 +14,7 @@ stdenv.mkDerivation {
   configurePhase = "";
   buildPhase = ''
     cd tests
-    python3 run_tests.py -j $NIX_BUILD_CORES --all clang++ node
+    python3 run_tests.py -j $NIX_BUILD_CORES --all --asan clang++ node
   '';
   installPhase = ''
     mkdir -p $out

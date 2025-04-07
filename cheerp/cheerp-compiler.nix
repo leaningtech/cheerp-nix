@@ -70,11 +70,11 @@ in stdenv.mkDerivation {
     cd build
   '';
   buildPhase = ''
-    TERM=dumb ninja ${if buildClangd then "clangd" else "distribution"}
+    TERM=dumb ninja -j $NIX_BUILD_CORES ${if buildClangd then "clangd" else "distribution"}
   '';
   checkPhase = ''
-    TERM=dumb ninja check-llvm
-    TERM=dumb ninja check-clang
+    TERM=dumb ninja -j $NIX_BUILD_CORES check-llvm
+    TERM=dumb ninja -j $NIX_BUILD_CORES check-clang
   '';
   installPhase = ''
     TERM=dumb ninja ${if buildClangd then "install-clangd" else "install-distribution"}
