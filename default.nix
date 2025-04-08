@@ -1,6 +1,6 @@
 { system ? builtins.currentSystem
-, lock? ./npins/sources.json
-, sources? import ./npins { inherit lock; }
+, lock ? ./npins/sources.json
+, sources ? import ./npins { inherit lock; }
 , nixpkgs ? sources.nixpkgs
 }:
 let
@@ -14,7 +14,7 @@ let
     inherit system;
   };
   filterSrc' = import sources.nix-filter;
-  filterSrc = { root, include ? [ ], exclude ? [ ] }:
+  filterSrc = { root, include ? null, exclude ? [ ] }:
     if builtins.isPath root then
       let
         makePaths = l:
@@ -23,10 +23,20 @@ let
       in
       fs.toSource {
         root = root;
-        fileset = fs.difference (fs.unions (makePaths include)) (fs.unions (makePaths exclude));
+        fileset =
+          if include != null then
+            fs.difference (fs.unions (makePaths include)) (fs.unions (makePaths exclude))
+          else
+            fs.difference root (fs.unions (makePaths exclude));
       }
     else
-      filterSrc' { inherit root include exclude; };
+      if include != null then
+        filterSrc'
+          {
+            inherit root include exclude;
+          }
+      else
+        filterSrc' { inherit root exclude; };
   llvmPackages = pkgs.llvmPackages_17;
   ccacheClangStdenv = pkgs.ccacheStdenv.override {
     stdenv = llvmPackages.libcxxStdenv;
@@ -50,7 +60,7 @@ let
     compiler-dev = pkgs.mkShell.override { stdenv = ccacheClangStdenv; } {
       CHEERP_CCACHE = 1;
       CHEERP_CHECK = 0;
-      CCACHE_NOHASHDIR=1;
+      CCACHE_NOHASHDIR = 1;
       shellHook = ''
         export CCACHE_BASEDIR=$PWD
       '';
