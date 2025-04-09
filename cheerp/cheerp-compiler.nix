@@ -2,7 +2,7 @@
 , zlib, zstd, which, libedit, filterSrc, sources, conf, buildClangd ? false }:
 let
   build-type = if conf.build == "prod" then "Release" else "Debug";
-  doCheck = conf.doCheck;
+  doCheck = conf.doCheck && !buildClangd;
 in stdenv.mkDerivation {
   pname = if buildClangd then "cheerp-clangd" else "cheerp-compiler";
   version = "${conf.build}-master";
@@ -70,7 +70,7 @@ in stdenv.mkDerivation {
     cd build
   '';
   buildPhase = ''
-    ninja ${if buildClangd then "clangd" else ""}
+    ninja ${if buildClangd then "clangd" else "distribution"}
   '';
   checkPhase = ''
     ninja check-llvm
