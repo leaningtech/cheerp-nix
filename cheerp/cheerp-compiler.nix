@@ -70,14 +70,14 @@ in stdenv.mkDerivation {
     cd build
   '';
   buildPhase = ''
-    ninja ${if buildClangd then "clangd" else "distribution"}
+    TERM=dumb ninja ${if buildClangd then "clangd" else "distribution"}
   '';
   checkPhase = ''
-    ninja check-llvm
-    ninja check-clang
+    TERM=dumb ninja check-llvm
+    TERM=dumb ninja check-clang
   '';
   installPhase = ''
-    ninja ${if buildClangd then "install-clangd" else "install-distribution"}
+    TERM=dumb ninja ${if buildClangd then "install-clangd" else "install-distribution"}
   '';
 
   meta = with lib; {

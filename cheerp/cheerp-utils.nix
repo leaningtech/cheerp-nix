@@ -21,7 +21,7 @@ stdenv.mkDerivation {
   '';
   installPhase = ''
     rm $out/bin
-    ninja install
+    TERM=dumb ninja install
   '';
 
   meta = with lib; {
