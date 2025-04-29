@@ -34,7 +34,8 @@ stdenv.mkDerivation {
     make
   '';
   installPhase = if testMode then ''
-    touch $out
+    mkdir -p $out
+    touch $out/passed
   '' else ''
     make install
   '';
