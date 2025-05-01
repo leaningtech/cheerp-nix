@@ -29,7 +29,7 @@ stdenv.mkDerivation {
   '';
 
   buildPhase = if testMode then ''
-    make check-asan
+    make -j $NIX_BUILD_CORES check-asan
   '' else ''
     make
   '';
