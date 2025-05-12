@@ -6,8 +6,9 @@ self: super: {
       export CCACHE_UMASK=002
       export CCACHE_SLOPPINESS=random_seed
       : ''${CCACHE_BASEDIR=/build}
-      : ''${CCACHE_DIR=/var/cache/ccache}
       export CCACHE_BASEDIR
+      : ''${CCACHE_DIR=/var/cache/ccache}
+      export CCACHE_DIR
       if [ ! -d "$CCACHE_DIR" ]; then
         echo "====="
         echo "Directory '$CCACHE_DIR' does not exist"
