@@ -22,9 +22,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "33a1a91499becffffe5a076c6c28ba48f5a2f1b9",
-      "url": "https://github.com/leaningtech/cheerp-libs/archive/33a1a91499becffffe5a076c6c28ba48f5a2f1b9.tar.gz",
-      "hash": "1a0rc9ab8kak5ff0pvswljliqxnjma2x1wswm6ccz4vpnkvjmzic"
+      "revision": "bf175539cad893f1a4a21a36cbdd1b81e1a2f831",
+      "url": "https://github.com/leaningtech/cheerp-libs/archive/bf175539cad893f1a4a21a36cbdd1b81e1a2f831.tar.gz",
+      "hash": "0149n594m8fdlvkj8whhr59d7nsqk4kc0ixbr42iypmlm9q9igqq"
     },
     "cheerp-musl": {
       "type": "Git",
