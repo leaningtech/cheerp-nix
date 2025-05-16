@@ -31,7 +31,7 @@ stdenv.mkDerivation {
   buildPhase = if testMode then ''
     make -j $NIX_BUILD_CORES check-asan
   '' else ''
-    make
+    make -j $NIX_BUILD_CORES
   '';
   installPhase = if testMode then ''
     mkdir -p $out
