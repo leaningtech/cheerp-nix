@@ -3,7 +3,7 @@
 
   inputs = {
     utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
   };
 
   outputs = { self, nixpkgs, ... }@inputs: inputs.utils.lib.eachSystem [
