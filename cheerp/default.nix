@@ -147,15 +147,5 @@ in rec {
 
   devShell = mkShell { packages = [ cheerp cheerp-clangd ]; };
 
-  cheerpPlatform = { config = "cheerp-leaningtech-webbrowser-genericjs"; };
-  cheerpWasmPlatform = { config = "cheerp-leaningtech-webbrowser-wasm"; };
-  cheerpWasiPlatform = { config = "cheerp-leaningtech-wasi-wasm"; };
-  mkGenericjs = callPackage ./stdenv.nix {
-    inherit cheerpPlatform cheerpWasmPlatform cheerpWasiPlatform;
-    inherit cheerp;
-    hostPlatform = cheerpPlatform;
-    targetPlatform = cheerpPlatform;
-  };
-  shell = mkGenericjs { name = "shell"; };
-
+  crossPkgs = callPackage ./cross.nix { inherit cheerp; };
 })
