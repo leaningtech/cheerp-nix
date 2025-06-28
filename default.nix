@@ -10,33 +10,10 @@ let
     overlays = [ (import ./ccache.nix) ];
     config.allowUnfree = true;
   };
+  lib = import ./lib { nix-filter = import sources.nix-filter; lib = pkgs.lib; };
   npins = import sources.npins {
     inherit system;
   };
-  filterSrc' = import sources.nix-filter;
-  filterSrc = { root, include ? null, exclude ? [ ] }:
-    if builtins.isPath root then
-      let
-        makePaths = l:
-          map (p: fs.maybeMissing (root + "/${p}")) l;
-        fs = pkgs.lib.fileset;
-      in
-      fs.toSource {
-        root = root;
-        fileset =
-          if include != null then
-            fs.difference (fs.unions (makePaths include)) (fs.unions (makePaths exclude))
-          else
-            fs.difference root (fs.unions (makePaths exclude));
-      }
-    else
-      if include != null then
-        filterSrc'
-          {
-            inherit root include exclude;
-          }
-      else
-        filterSrc' { inherit root exclude; };
   llvmPackages = pkgs.llvmPackages_17;
   ccacheClangStdenv = pkgs.ccacheStdenv.override {
     stdenv = llvmPackages.libcxxStdenv;
@@ -48,7 +25,8 @@ let
     inherit ccacheClangStdenv;
     inherit llvmPackages;
     inherit sources;
-    inherit filterSrc;
+    inherit (lib) filterSrc;
+    mylib = lib;
   };
   devShells = {
     default = pkgs.mkShell {
@@ -79,4 +57,5 @@ in
 {
   inherit packages;
   inherit devShells;
+  inherit lib;
 }

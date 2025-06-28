@@ -18,6 +18,6 @@
       in
       {
         legacyPackages = default.packages;
-        inherit (default) devShells;
+        inherit (default) devShells lib;
       });
 }

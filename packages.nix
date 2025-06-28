@@ -2,27 +2,13 @@
 , pkgs
 , clangStdenv
 , ccacheClangStdenv
+, mylib
 , ...
 }@inputs:
 let
-  getEnvString = envName: descr: default:
-    let
-      envVal = builtins.getEnv envName;
-    in
-    if envVal == "" || envVal == default
-    then
-      default
-    else
-      builtins.trace "Overriding option \"${descr}\" with \"${envVal}\" due to set \"${envName}\"" envVal;
-  getEnvBool = envName: descr: default:
-    let
-      str = getEnvString envName descr (toString default);
-    in
-    str == "1";
-
-  useCcache = getEnvBool "CHEERP_CCACHE" "Ccache build" false;
-  doCheck = getEnvBool "CHEERP_CHECK" "Run checks" true;
-  localCheerp = getEnvString "CHEERP_LOCAL_PATH" "Path to local cheerp-compiler build" "";
+  useCcache = mylib.env.getBool "CHEERP_CCACHE" "Ccache build" false;
+  doCheck = mylib.env.getBool "CHEERP_CHECK" "Run checks" true;
+  localCheerp = mylib.env.getString "CHEERP_LOCAL_PATH" "Path to local cheerp-compiler build" "";
   stdenv = if useCcache then ccacheClangStdenv else clangStdenv;
   dev = {
     conf = {
