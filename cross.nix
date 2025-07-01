@@ -39,6 +39,7 @@ let
   mkDerivationWrapper = mode: old: extendMkDerivationArgs old (
     args: {
       dontStrip = true;
+      enableParallelBuilding = args.enableParallelBuilding or true;
       configureFlags = (args.configureFlags or [ ]) ++ [
       ];
       makeFlags = (args.makeFlags or [ ]) ++ [
@@ -62,6 +63,7 @@ let
         "-DCMAKE_CXX_COMPILER_VERSION=16.0"
         "-DCMAKE_CXX_COMPILER_FORCED=FALSE"
       ] ++ (args.cmakeFlags or [ ]);
+      env.CHEERP_PREFIX=cheerp;
     }
   );
   crossPkgs = mode: import path {
@@ -103,7 +105,7 @@ let
         });
     };
     crossOverlays = [
-      (final: prev: { })
+      (import ./pkgs)
     ];
   };
 in

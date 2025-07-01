@@ -58,4 +58,6 @@ in
   inherit packages;
   inherit devShells;
   inherit lib;
+  inherit pkgs;
+  inputs.nixpkgs = nixpkgs;
 }

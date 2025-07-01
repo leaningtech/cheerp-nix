@@ -147,5 +147,5 @@ in rec {
 
   devShell = mkShell { packages = [ cheerp cheerp-clangd ]; };
 
-  crossPkgs = callPackage ./cross.nix { inherit cheerp; };
+  cross = callPackage ../cross.nix { inherit cheerp; };
 })
