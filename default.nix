@@ -38,7 +38,6 @@ let
     compiler-dev = pkgs.mkShell.override { stdenv = ccacheClangStdenv; } {
       CHEERP_CCACHE = 1;
       CHEERP_CHECK = 0;
-      CCACHE_NOHASHDIR = 1;
       shellHook = ''
         export CCACHE_BASEDIR=$PWD
       '';
