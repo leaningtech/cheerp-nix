@@ -1,4 +1,4 @@
-{ nix-filter, lib }: {
-  filterSrc = import ./filter-src.nix { inherit nix-filter lib; };
+{ lib, runCommand }: {
+  filterSrc = import ./filter-src.nix { inherit lib runCommand; };
   env = import ./env.nix;
 }

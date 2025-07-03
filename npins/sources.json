@@ -11,7 +11,7 @@
       "submodules": false,
       "revision": "566f0869e4e18a9820abaf4a8e87d7bb1a7f147f",
       "url": "https://github.com/leaningtech/cheerp-compiler/archive/566f0869e4e18a9820abaf4a8e87d7bb1a7f147f.tar.gz",
-      "hash": "0348c5ywlvwxhmkl2a7av58z84bb866p4mqj84gyh2rkqdsgv6xi"
+      "hash": "sha256-sZv9dMMzC+gfQRJXco1BaxH0UdnqKEFnhZ1vyn1hiAw="
     },
     "cheerp-libs": {
       "type": "Git",
@@ -24,7 +24,7 @@
       "submodules": false,
       "revision": "1733ed3a700b5bcfde2ac97e76910456711e8ef4",
       "url": "https://github.com/leaningtech/cheerp-libs/archive/1733ed3a700b5bcfde2ac97e76910456711e8ef4.tar.gz",
-      "hash": "10m2m2r7jfavjhxkgafs6ksrhwldp7bdnk1ybpf91fk6p5hxgfbj"
+      "hash": "sha256-crnXYblmupDcXT5M29a5jXKY9TTaqTc7lFs5ebKoooI="
     },
     "cheerp-musl": {
       "type": "Git",
@@ -37,7 +37,7 @@
       "submodules": false,
       "revision": "1a6bcd25eee3f99c0c9c09b96c8a0e09c04b03f8",
       "url": "https://github.com/leaningtech/cheerp-musl/archive/1a6bcd25eee3f99c0c9c09b96c8a0e09c04b03f8.tar.gz",
-      "hash": "1mx1fpx668f3ng41sks53rn4cp84d9g5yiphmm74y37b23n4awp6"
+      "hash": "sha256-5nJF7BDrDE9OrfBGX15qBF1GbB5FTx3Is8MhY/p1odc="
     },
     "cheerp-utils": {
       "type": "Git",
@@ -50,20 +50,7 @@
       "submodules": false,
       "revision": "45d848b1c5679b5a380498624025f3dcba112aae",
       "url": "https://github.com/leaningtech/cheerp-utils/archive/45d848b1c5679b5a380498624025f3dcba112aae.tar.gz",
-      "hash": "0wyfi4b15yjs8jq5jk2y9d2fpjgsraijd0xdig6b7sklw4fb4ad8"
-    },
-    "nix-filter": {
-      "type": "Git",
-      "repository": {
-        "type": "GitHub",
-        "owner": "numtide",
-        "repo": "nix-filter"
-      },
-      "branch": "main",
-      "submodules": false,
-      "revision": "f7653272fd234696ae94229839a99b73c9ab7de0",
-      "url": "https://github.com/numtide/nix-filter/archive/f7653272fd234696ae94229839a99b73c9ab7de0.tar.gz",
-      "hash": "1jyqf9rnqnpscyxwv5p9kzznd3bsnjsh1q23wpmwmgdmykjac5m1"
+      "hash": "sha256-qCmyHOF06rPMi62DJqPK+snrREteTFmwRFr6EhaJznM="
     },
     "nixpkgs": {
       "type": "Git",
@@ -76,24 +63,21 @@
       "submodules": false,
       "revision": "b43c397f6c213918d6cfe6e3550abfe79b5d1c51",
       "url": "https://github.com/nixos/nixpkgs/archive/b43c397f6c213918d6cfe6e3550abfe79b5d1c51.tar.gz",
-      "hash": "1dkp9sxci4b4f111x0ck493fiag68qjs5c927khzcj2a5pdbsayl"
+      "hash": "sha256-1Cu92i1KSPbhPCKxoiVG5qnoRiKTgR5CcGSRyLpOd7Y="
     },
     "npins": {
-      "type": "GitRelease",
+      "type": "Git",
       "repository": {
         "type": "GitHub",
-        "owner": "andir",
+        "owner": "piegamesde",
         "repo": "npins"
       },
-      "pre_releases": false,
-      "version_upper_bound": null,
-      "release_prefix": null,
+      "branch": "dev",
       "submodules": false,
-      "version": "0.3.0",
-      "revision": "6cc1930e703698487bd703258126435a536ca492",
-      "url": "https://api.github.com/repos/andir/npins/tarball/0.3.0",
-      "hash": "1450ddp5gm3n5jvg64v9rc2jvf9za79fv4dmac5m8d47l0iblfcx"
+      "revision": "bf531fdb0360e49c62be47dc345079db2e98fa3e",
+      "url": "https://github.com/piegamesde/npins/archive/bf531fdb0360e49c62be47dc345079db2e98fa3e.tar.gz",
+      "hash": "sha256-+0g84WQBx0O7/vnPX6/VHzaJsoas5O4kmU+V9l8rv+Q="
     }
   },
-  "version": 5
+  "version": 6
 }

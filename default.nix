@@ -1,6 +1,6 @@
 { system ? builtins.currentSystem
 , lock ? ./npins/sources.json
-, sources ? import ./npins { inherit lock; }
+, sources ? import ./npins { input = lock; }
 , nixpkgs ? sources.nixpkgs
 }:
 let
@@ -10,9 +10,9 @@ let
     overlays = [ (import ./ccache.nix) ];
     config.allowUnfree = true;
   };
-  lib = import ./lib { nix-filter = import sources.nix-filter; lib = pkgs.lib; };
+  lib = import ./lib { inherit (pkgs) lib runCommand; };
   npins = import sources.npins {
-    inherit system;
+    inherit system pkgs;
   };
   llvmPackages = pkgs.llvmPackages_17;
   ccacheClangStdenv = pkgs.ccacheStdenv.override {

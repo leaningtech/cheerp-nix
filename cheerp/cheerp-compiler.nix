@@ -1,25 +1,44 @@
-{ lib, stdenv, cmake, llvmPackages, ninja, python3, libxml2, libffi, ncurses
-, zlib, zstd, which, libedit, filterSrc, sources, conf, buildClangd ? false }:
+{ lib
+, pkgs
+, stdenv
+, cmake
+, llvmPackages
+, ninja
+, python3
+, libxml2
+, libffi
+, ncurses
+, zlib
+, zstd
+, which
+, libedit
+, filterSrc
+, sources
+, conf
+, buildClangd ? false
+}:
 let
   build-type = if conf.build == "prod" then "Release" else "Debug";
   doCheck = conf.doCheck && !buildClangd;
-in stdenv.mkDerivation {
+in
+stdenv.mkDerivation {
   pname = if buildClangd then "cheerp-clangd" else "cheerp-compiler";
   version = "${conf.build}-master";
 
   inherit doCheck;
 
   src = filterSrc {
-    root = sources.cheerp-compiler;
+    root = sources.cheerp-compiler { inherit pkgs; };
     include = [ "clang" "llvm" "cmake" "third-party" ]
       ++ (if buildClangd then [ "clang-tools-extra" ] else [ ]);
-    exclude = if !doCheck then [
-      "llvm/test"
-      "llvm/unittests"
-      "clang/test"
-      "clang/unittests"
-    ] else
-      [ ];
+    exclude =
+      if !doCheck then [
+        "llvm/test"
+        "llvm/unittests"
+        "clang/test"
+        "clang/unittests"
+      ] else
+        [ ];
   };
 
   nativeBuildInputs =
@@ -28,21 +47,22 @@ in stdenv.mkDerivation {
   propagatedBuildInputs = [ ncurses zlib zstd libedit ];
   nativeCheckInputs = [ which ];
 
-  postPatch = if doCheck then ''
-    #remove some tests that don't work in a nix build. taken from nixpkgs
+  postPatch =
+    if doCheck then ''
+      #remove some tests that don't work in a nix build. taken from nixpkgs
 
-    rm llvm/test/tools/llvm-objcopy/ELF/mirror-permissions-unix.test
+      rm llvm/test/tools/llvm-objcopy/ELF/mirror-permissions-unix.test
 
-    substituteInPlace llvm/unittests/Support/VirtualFileSystemTest.cpp \
-      --replace "PhysicalFileSystemWorkingDirFailure" "DISABLED_PhysicalFileSystemWorkingDirFailure"
+      substituteInPlace llvm/unittests/Support/VirtualFileSystemTest.cpp \
+        --replace "PhysicalFileSystemWorkingDirFailure" "DISABLED_PhysicalFileSystemWorkingDirFailure"
 
-    substituteInPlace llvm/unittests/Support/CMakeLists.txt \
-      --replace "Path.cpp" ""
-    rm llvm/unittests/Support/Path.cpp
+      substituteInPlace llvm/unittests/Support/CMakeLists.txt \
+        --replace "Path.cpp" ""
+      rm llvm/unittests/Support/Path.cpp
 
-    rm clang/test/Modules/header-attribs.cpp
-  '' else
-    "";
+      rm clang/test/Modules/header-attribs.cpp
+    '' else
+      "";
 
   configurePhase = ''
     cmake \
