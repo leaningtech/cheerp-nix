@@ -27,7 +27,11 @@ let
   myScope = env: lib.makeScope lib.callPackageWith (self: pkgs // inputs // { inherit stdenv; } // env);
   cheerpDev = (myScope dev).callPackage ./cheerp { };
   cheerpProd = (myScope prod).callPackage ./cheerp { };
+  crossDebug = (myScope dev).callPackage ./cross.nix { inherit (cheerpDev) cheerp; };
+  crossDev = (myScope dev).callPackage ./cross.nix { inherit (cheerpProd) cheerp; };
+  crossProd = (myScope prod).callPackage ./cross.nix { inherit (cheerpProd) cheerp; };
 in
-cheerpProd // {
-  dev = cheerpDev;
+(cheerpProd // crossProd) // {
+  dev = (cheerpDev // crossDev);
+  debug = (cheerpDev // crossDebug);
 }
