@@ -1,4 +1,4 @@
-{ lib, path, system, bintools-unwrapped, cheerp }:
+{ lib, path, system, runCommand, bash, cheerp }:
 let
   mkPlatform = mode: {
     config =
@@ -38,7 +38,6 @@ let
     );
   mkDerivationWrapper = mode: old: extendMkDerivationArgs old (
     args: {
-      dontStrip = true;
       enableParallelBuilding = args.enableParallelBuilding or true;
       configureFlags = (args.configureFlags or [ ]) ++ [
       ];
@@ -90,7 +89,16 @@ let
             isGNU = true;
             bintools = buildPackages.wrapBintoolsWith {
               inherit stdenvNoCC;
-              bintools = bintools-unwrapped;
+              bintools = runCommand "bintools" {} ''
+                  mkdir -p $out/bin
+                  ln -s ${cheerp}/bin/llvm-ar $out/bin/ar
+                  ln -s ${cheerp}/bin/llvm-strip $out/bin/strip
+                  ln -s ${cheerp}/bin/llvm-link $out/bin/ld
+                  cat > $out/bin/ranlib << 'EOF'
+                  #!${bash}/bin/bash
+                  ${cheerp}/bin/llvm-ar s "$@"
+                  EOF
+              '';
               libc = null;
             };
             libc = null;
