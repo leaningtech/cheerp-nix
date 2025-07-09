@@ -1,16 +1,17 @@
-{ lib, stdenv, cmake, ninja, python3, cheerp, wasm, sources, filterSrc }:
+{ lib, pkgs, stdenv, cmake, ninja, python3, cheerp, wasm, sources, filterSrc }:
 
 let
   target = if wasm then "cheerp-wasm" else "cheerp";
   toolchain =
     if wasm then "CheerpWasmToolchain.cmake" else "CheerpToolchain.cmake";
   name = if wasm then "cheerp-runtimes-wasm" else "cheerp-runtimes-js";
-in stdenv.mkDerivation {
+in
+stdenv.mkDerivation {
   pname = name;
   version = "master";
 
   src = filterSrc {
-    root = sources.cheerp-compiler;
+    root = sources.cheerp-compiler { inherit pkgs; };
     include =
       [ "runtimes" "libcxx" "libcxxabi" "llvm/cmake" "llvm/utils" "cmake" ];
   };

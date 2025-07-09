@@ -1,11 +1,11 @@
-{ lib, stdenv, cmake, ninja, cheerp-compiler, sources, filterSrc }:
+{ lib, pkgs, stdenv, cmake, ninja, cheerp-compiler, sources, filterSrc }:
 
 stdenv.mkDerivation {
   pname = "cheerp-utils";
   version = "master";
 
   src = filterSrc {
-    root = sources.cheerp-utils;
+    root = sources.cheerp-utils { inherit pkgs; };
     include = [ "CMakeLists.txt" "include" "tools" "scripts" "tests" ];
   };
 

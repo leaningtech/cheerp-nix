@@ -1,11 +1,11 @@
-{ lib, stdenv, python3, nodejs, cheerp, sources, filterSrc }:
+{ lib, pkgs, stdenv, python3, nodejs, cheerp, sources, filterSrc }:
 
 stdenv.mkDerivation {
   pname = "cheerp-unit-tests";
   version = "master";
 
   src = filterSrc {
-    root = sources.cheerp-utils;
+    root = sources.cheerp-utils { inherit pkgs; };
     include = [ "tests" ];
   };
 

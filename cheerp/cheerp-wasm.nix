@@ -1,11 +1,11 @@
-{ lib, stdenv, cheerp, sources, filterSrc }:
+{ lib, pkgs, stdenv, cheerp, sources, filterSrc }:
 
 stdenv.mkDerivation {
   pname = "cheerp-wasm";
   version = "master";
 
   src = filterSrc {
-    root = sources.cheerp-libs;
+    root = sources.cheerp-libs { inherit pkgs; };
     include = [ "wasm" ];
   };
   sourceRoot = "source/wasm";

@@ -1,10 +1,21 @@
-{ lib, stdenv, cmake, python3, llvmPackages, nodejs, cheerp, sources, filterSrc, testMode }:
+{ lib
+, pkgs
+, stdenv
+, cmake
+, python3
+, llvmPackages
+, nodejs
+, cheerp
+, sources
+, filterSrc
+, testMode
+}:
 stdenv.mkDerivation {
   pname = if testMode then "cheerp-asan-tests" else "cheerp-asan";
   version = "master";
 
   src = filterSrc {
-    root = sources.cheerp-compiler;
+    root = sources.cheerp-compiler { inherit pkgs; };
     include = [
       "compiler-rt"
       "llvm/cmake"
@@ -28,17 +39,19 @@ stdenv.mkDerivation {
     cd build
   '';
 
-  buildPhase = if testMode then ''
-    make -j $NIX_BUILD_CORES check-asan
-  '' else ''
-    make -j $NIX_BUILD_CORES
-  '';
-  installPhase = if testMode then ''
-    mkdir -p $out
-    touch $out/passed
-  '' else ''
-    make install
-  '';
+  buildPhase =
+    if testMode then ''
+      make -j $NIX_BUILD_CORES check-asan
+    '' else ''
+      make -j $NIX_BUILD_CORES
+    '';
+  installPhase =
+    if testMode then ''
+      mkdir -p $out
+      touch $out/passed
+    '' else ''
+      make install
+    '';
 
   doCheck = false;
 

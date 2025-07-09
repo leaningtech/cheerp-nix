@@ -1,15 +1,16 @@
-{ lib, stdenv, cheerp-compiler, wasm, sources, filterSrc }:
+{ lib, pkgs, stdenv, cheerp-compiler, wasm, sources, filterSrc }:
 
 let
   target = if wasm then "cheerp-wasm" else "cheerp";
   install-target = if wasm then "install-bc" else "install-cheerp";
   name = if wasm then "cheerp-musl-wasm" else "cheerp-musl-js";
-in stdenv.mkDerivation {
+in
+stdenv.mkDerivation {
   pname = name;
   version = "master";
 
   src = filterSrc {
-    root = sources.cheerp-musl;
+    root = sources.cheerp-musl { inherit pkgs; };
     include = [ "configure" "Makefile" "arch" "include" "src" "crt" "tools" ];
   };
 

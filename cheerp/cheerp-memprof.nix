@@ -1,11 +1,11 @@
-{ lib, stdenv, cmake, ninja, cheerp, sources, filterSrc }:
+{ lib, pkgs, stdenv, cmake, ninja, cheerp, sources, filterSrc }:
 
 stdenv.mkDerivation {
   pname = "cheerp-memprof";
   version = "master";
 
   src = filterSrc {
-    root = sources.cheerp-libs;
+    root = sources.cheerp-libs { inherit pkgs; };
     include = [ "memprof" ];
     exclude = [ "memprof/build" ];
   };

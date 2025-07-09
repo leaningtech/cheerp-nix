@@ -1,15 +1,16 @@
-{ lib, stdenv, cheerp, wasm, sources, filterSrc }:
+{ lib, pkgs, stdenv, cheerp, wasm, sources, filterSrc }:
 
 let
   name = if wasm then "cheerp-stdlibs-wasm" else "cheerp-stdlibs-js";
   build-target = if wasm then "asmjs" else "genericjs";
   install-target = if wasm then "install_asmjs" else "install_genericjs";
-in stdenv.mkDerivation {
+in
+stdenv.mkDerivation {
   pname = name;
   version = "master";
 
   src = filterSrc {
-    root = sources.cheerp-libs;
+    root = sources.cheerp-libs { inherit pkgs; };
     include = [ "stdlibs/Makefile" ];
   };
   sourceRoot = "source/stdlibs";
