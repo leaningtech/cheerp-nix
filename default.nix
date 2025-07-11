@@ -1,6 +1,5 @@
 { system ? builtins.currentSystem
-, lock ? ./npins/sources.json
-, sources ? import ./npins { inherit lock; }
+, sources ? import ./npins
 , nixpkgs ? sources.nixpkgs
 }:
 let
@@ -11,9 +10,6 @@ let
     config.allowUnfree = true;
   };
   lib = import ./lib { inherit (pkgs) lib runCommand; };
-  npins = import sources.npins {
-    inherit system;
-  };
   llvmPackages = pkgs.llvmPackages_17;
   ccacheClangStdenv = pkgs.ccacheStdenv.override {
     stdenv = llvmPackages.libcxxStdenv;
@@ -30,8 +26,8 @@ let
   };
   devShells = {
     default = pkgs.mkShell {
-      packages = [
-        pkgs.just
+      packages = with pkgs; [
+        just
         npins
       ];
     };
