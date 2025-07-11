@@ -10,7 +10,7 @@ let
     overlays = [ (import ./ccache.nix) ];
     config.allowUnfree = true;
   };
-  lib = import ./lib { nix-filter = import sources.nix-filter; lib = pkgs.lib; };
+  lib = import ./lib { inherit (pkgs) lib runCommand; };
   npins = import sources.npins {
     inherit system;
   };
