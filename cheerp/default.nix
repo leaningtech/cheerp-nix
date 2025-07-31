@@ -18,12 +18,37 @@ in rec {
     wasm = true;
   };
 
+  cheerp-compiler-local = stdenv.mkDerivation {
+    name = "cheerp-compiler-local";
+    phases = [ "installPhase" ];
+    installPhase = ''
+      mkdir -p $out/{bin,lib}
+      ln -s ${conf.localCheerp}/lib/clang $out/lib/
+      ln -s ${conf.localCheerp}/bin/clang $out/bin/
+      ln -s ${conf.localCheerp}/bin/clang++ $out/bin/
+      ln -s ${conf.localCheerp}/bin/llvm-link $out/bin/
+      ln -s ${conf.localCheerp}/bin/llvm-ar $out/bin/
+      ln -s ${conf.localCheerp}/bin/llvm-dis $out/bin/
+      ln -s ${conf.localCheerp}/bin/llc $out/bin/
+      ln -s ${conf.localCheerp}/bin/opt $out/bin/
+    '';
+  };
+
   cheerpStage = { name ? "cheerp", compiler ? cheerp-compiler, libs }:
-    callPackage ./cheerp.nix {
-      name = "${name}-${conf.build}";
-      cheerp-compiler = compiler;
-      inherit cheerp-utils;
-      inherit libs;
+    callPackage ./cheerp.nix
+      {
+        name = "${name}-${conf.build}";
+        cheerp-compiler = compiler;
+        inherit cheerp-utils;
+        inherit libs;
+      } // {
+      local = callPackage ./cheerp.nix {
+        name = "${name}-${conf.build}-local";
+        cheerp-compiler = compiler;
+        compiler-path = cheerp-compiler-local;
+        inherit cheerp-utils;
+        inherit libs;
+      };
     };
 
   cheerp-nomusl = cheerpStage {
@@ -95,27 +120,7 @@ in rec {
   cheerp-memprof =
     callPackage ./cheerp-memprof.nix { cheerp = cheerp-noasan; };
 
-  cheerp-compiler-local = stdenv.mkDerivation {
-    name = "cheerp-compiler-local";
-    phases = [ "installPhase" ];
-    installPhase = ''
-      mkdir -p $out/{bin,lib}
-      ln -s ${conf.localCheerp}/lib/clang $out/lib/
-      ln -s ${conf.localCheerp}/bin/clang $out/bin/
-      ln -s ${conf.localCheerp}/bin/clang++ $out/bin/
-      ln -s ${conf.localCheerp}/bin/llvm-link $out/bin/
-      ln -s ${conf.localCheerp}/bin/llvm-ar $out/bin/
-      ln -s ${conf.localCheerp}/bin/llvm-dis $out/bin/
-      ln -s ${conf.localCheerp}/bin/llc $out/bin/
-      ln -s ${conf.localCheerp}/bin/opt $out/bin/
-    '';
-  };
   cheerp = cheerpStage {
-    compiler =
-      if conf.localCheerp == "" then
-        cheerp-compiler
-      else
-        cheerp-compiler-local;
     libs = [
       cheerp-musl-js
       cheerp-musl-wasm

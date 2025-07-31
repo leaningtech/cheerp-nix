@@ -1,7 +1,7 @@
-{ lib, symlinkJoin, cheerp-compiler, cheerp-utils, libs, name ? "cheerp" }:
+{ lib, symlinkJoin, cheerp-compiler, compiler-path ? cheerp-compiler, cheerp-utils, libs, name ? "cheerp" }:
 symlinkJoin {
   name = name;
-  paths = [ cheerp-compiler cheerp-utils ] ++ libs;
+  paths = [ compiler-path cheerp-utils ] ++ libs;
   postBuild = ''
     rm $out/share/cmake/Modules/CheerpCommon.cmake;
     rm $out/share/cmake/Modules/CheerpToolchain.cmake;
