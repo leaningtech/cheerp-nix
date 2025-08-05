@@ -1,0 +1,30 @@
+diff --git a/modules/im/ximcp/imLcPrs.c b/modules/im/ximcp/imLcPrs.c
+index ea6d429a..e91858b4 100644
+--- a/modules/im/ximcp/imLcPrs.c
++++ b/modules/im/ximcp/imLcPrs.c
+@@ -43,6 +43,7 @@ OR PERFORMANCE OF THIS SOFTWARE.
+ #include <stdio.h>
+ #include <limits.h>
+ #include "pathmax.h"
++#include <assert.h>
+ 
+ #define XLC_BUFSIZE 256
+ 
+@@ -140,6 +141,9 @@ nexttoken(
+     char *tokenbuf,
+     int *lastch)
+ {
++assert(0);
++abort();
++#if 0
+     int c;
+     int token;
+     char *p;
+@@ -277,6 +281,7 @@ nexttoken(
+     }
+ string_error:
+     return(token);
++#endif
+ }
+ 
+ static long

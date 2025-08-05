@@ -1,0 +1,101 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 388a90f9..5f42a15b 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -137,7 +137,8 @@ SET(GL_H
+     ${CMAKE_CURRENT_SOURCE_DIR}/gl/wrap/stub.h
+ )
+ 
+-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" AND NOT NO_LOADER)
++# CHEERP: Maybe we should use the normal toolchain and override compilers and flags instead
++if(${CMAKE_SYSTEM_NAME} MATCHES "Cheerp" AND NOT NO_LOADER)
+     include_directories(glx)
+ #    aux_source_directory(glx GLX_SOURCES)
+ #    list(APPEND GL_SOURCES ${GLX_SOURCES})
+diff --git a/src/gl/fpe.h b/src/gl/fpe.h
+index 5682f4ad..d5eddc57 100644
+--- a/src/gl/fpe.h
++++ b/src/gl/fpe.h
+@@ -174,7 +174,6 @@ typedef struct fpe_texenv_s {
+   unsigned int dummy:6;                 // align sturture to 64bits...
+ } fpe_texenv_t;
+ 
+-#pragma pack(1)
+ typedef struct fpe_state_s {
+     fpe_texture_t texture[MAX_TEX];      // 16 texture flags
+     fpe_texgen_t texgen[MAX_TEX];        // 16 texgen flags
+@@ -183,42 +182,41 @@ typedef struct fpe_state_s {
+     uint8_t light;                       // 8 lights packed
+     uint8_t light_cutoff180;             // 8 lights cutoff!=180 flags
+     uint8_t light_direction;             // 8 lights position[3].w==0 flags
+-    unsigned int plane:6;                // 6 planes packed
+-    unsigned int fogmode:2;              // fog mode
+-    unsigned int fogdist:2;              // fog distance mode
+-    unsigned int fogsource:1;            // fog source
+-    unsigned int fog:1;                  // Fog enabled or not
+-    unsigned int colorsum:1;             // secondary color enabled
+-    unsigned int lighting:1;             // global lighting enabled
+-    unsigned int normalize:1;            // normalization
+-    unsigned int rescaling:1;            // rescale normal
+-    unsigned int alphafunc:3;            // alpha functions
+-    unsigned int alphatest:1;            // alpha test
+-    unsigned int twosided:1;             // lightmodel: two sided
+-    unsigned int color_material:1;       // color material enabled
+-    unsigned int cm_front_mode:3;        // front color material mode
+-    unsigned int cm_back_mode:3;         // back color material mode
+-    unsigned int cm_front_nullexp:1;     // front material shininess is 0
+-    unsigned int cm_back_nullexp:1;      // back material shininess is 0
+-    unsigned int light_separate:1;       // light separate specular color
+-    unsigned int light_localviewer:1;    // light local viewer
+-    unsigned int point:1;                // point rendering
+-    unsigned int pointsprite:1;          // point sprite rendering
+-    unsigned int pointsprite_coord:1;    // point sprite coord replace
+-    unsigned int pointsprite_upper:1;    // if coord is upper left and not lower left
+-    unsigned int vertex_prg_enable:1;    // if vertex program is enabled
+-    unsigned int fragment_prg_enable:1;  // if fragment program is enabled
+-    unsigned int blend_enable:1;
+-    unsigned int blendsrcrgb:4;
+-    unsigned int blendsrcalpha:4;
+-    unsigned int blenddstrgb:4;
+-    unsigned int blenddstalpha:4;
+-    unsigned int blendeqrgb:3;
+-    unsigned int blendeqalpha:3;
++    uint8_t plane;                // 6 planes packed
++    uint8_t fogmode;              // fog mode
++    uint8_t fogdist;              // fog distance mode
++    uint8_t fogsource;            // fog source
++    uint8_t fog;                  // Fog enabled or not
++    uint8_t colorsum;             // secondary color enabled
++    uint8_t lighting;             // global lighting enabled
++    uint8_t normalize;            // normalization
++    uint8_t rescaling;            // rescale normal
++    uint8_t alphafunc;            // alpha functions
++    uint8_t alphatest;            // alpha test
++    uint8_t twosided;             // lightmodeltwo sided
++    uint8_t color_material;       // color material enabled
++    uint8_t cm_front_mode;        // front color material mode
++    uint8_t cm_back_mode;         // back color material mode
++    uint8_t cm_front_nullexp;     // front material shininess is 0
++    uint8_t cm_back_nullexp;      // back material shininess is 0
++    uint8_t light_separate;       // light separate specular color
++    uint8_t light_localviewer;    // light local viewer
++    uint8_t point;                // point rendering
++    uint8_t pointsprite;          // point sprite rendering
++    uint8_t pointsprite_coord;    // point sprite coord replace
++    uint8_t pointsprite_upper;    // if coord is upper left and not lower left
++    uint8_t vertex_prg_enable;    // if vertex program is enabled
++    uint8_t fragment_prg_enable;  // if fragment program is enabled
++    uint8_t blend_enable;
++    uint8_t blendsrcrgb;
++    uint8_t blendsrcalpha;
++    uint8_t blenddstrgb;
++    uint8_t blenddstalpha;
++    uint8_t blendeqrgb;
++    uint8_t blendeqalpha;
+     uint16_t     vertex_prg_id;          // Id of vertex program currently binded (0 most of the time), 16bits is more than enough...
+     uint16_t     fragment_prg_id;        // Id of fragment program currently binded (0 most of the time)
+ } fpe_state_t;
+-#pragma pack()
+ 
+ typedef struct fpe_fpe_s {
+   GLuint  frag, vert, prog;   // shader info
