@@ -42,7 +42,6 @@ let
       configureFlags = (args.configureFlags or [ ]) ++ [
       ];
       makeFlags = (args.makeFlags or [ ]) ++ [
-        "OBJEXT=o"
       ];
       cmakeFlags = [
         "-DCMAKE_MODULE_PATH=${cheerp}/share/cmake/Modules"
@@ -103,7 +102,7 @@ let
             };
             libc = null;
             extraBuildCommands = ''
-              echo "-target cheerp-${mode}" > $out/nix-support/cc-cflags
+              echo "-target cheerp-${mode} -flto" > $out/nix-support/cc-cflags
               echo "" > $out/nix-support/cc-ldflags
               echo "" > $out/nix-support/add-hardening.sh
             '';
