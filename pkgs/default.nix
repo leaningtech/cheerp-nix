@@ -1,14 +1,8 @@
 self: super:
 let
   inherit (self) callPackage;
-in
-rec {
-  zlib = callPackage ./zlib.nix {};
-  freetype = callPackage ./freetype.nix {};
-  expat = callPackage ./expat.nix {};
-  icu = callPackage ./icu.nix {};
-  xorg = super.xorg // rec {
-    xorgproto = callPackage ./xorgproto.nix {};
+  xorgPkgs = {
+    xorgproto = callPackage ./xorgproto.nix { };
     libXau = callPackage ./libXau.nix { };
     xcb-proto = callPackage ./xcb-proto.nix { };
     libxcb = callPackage ./libxcb.nix { };
@@ -21,6 +15,16 @@ rec {
     libXfixes = callPackage ./libXfixes.nix { };
     libXcursor = callPackage ./libXcursor.nix { };
   };
-  harfbuzz = callPackage ./harfbuzz.nix {};
-  gl4es = callPackage ./gl4es.nix {};
+  pkgs = {
+    xorg = super.xorg // xorgPkgs;
+    zlib = callPackage ./zlib.nix { };
+    freetype = callPackage ./freetype.nix { };
+    expat = callPackage ./expat.nix { };
+    icu = callPackage ./icu.nix { };
+    harfbuzz = callPackage ./harfbuzz.nix { };
+    gl4es = callPackage ./gl4es.nix { };
+  };
+in
+pkgs // {
+  __buildSet = pkgs // { xorg = super.lib.recurseIntoAttrs xorgPkgs; };
 }
