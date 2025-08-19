@@ -1,0 +1,51 @@
+version: 2.1
+
+setup: true
+
+orbs:
+  continuation: circleci/continuation@1
+
+jobs:
+  setup:
+    docker:
+      - image: nixos/nix:latest
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Configure Nix
+          command: |
+            cat \<< 'EOF' > /etc/nix/nix.conf
+              cores = 0
+              experimental-features = nix-command flakes ca-derivations
+              max-jobs = auto
+              sandbox = false
+              sandbox-fallback = true
+              substituters = https://cache.nixos.org/
+              system-features = nixos-test benchmark big-parallel kvm
+              trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+              trusted-substituters = 
+              trusted-users = root circleci
+            EOF
+      - run:
+          name: Install utilities
+          command: |
+            nix profile install nixpkgs#jq nixpkgs#curl nixpkgs#which nixpkgs#xxd
+      - run:
+          name: Evaluate Build
+          command: |
+            ./ci/generate-config.py > /tmp/config
+            nix copy --to file://$(pwd)/cache $(readlink -f *.drv)
+            CHECKSUM=$(sha256sum /tmp/config | xxd -r -p | base64 | tr '/' '_')
+            jq -n --arg cs "$CHECKSUM" '{"eval-cache-key": ("nix-store-eval-" + $cs)}' > /tmp/params.json
+      - save_cache:
+          key: nix-store-eval-{{ checksum "/tmp/config" }}
+          paths: ["cache"]
+      - continuation/continue:
+          configuration_path: /tmp/config
+          parameters: /tmp/params.json
+
+workflows:
+  setup-dynamic-config:
+    jobs:
+      - setup
