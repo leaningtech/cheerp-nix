@@ -47,5 +47,7 @@ jobs:
 
 workflows:
   setup-dynamic-config:
+    when:
+      equal: [ << pipeline.trigger_source >>, "api" ]
     jobs:
       - setup
