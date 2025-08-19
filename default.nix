@@ -24,6 +24,9 @@ let
     inherit (lib) filterSrc;
     mylib = lib;
   };
+  ci = pkgs.callPackage ./ci {
+    inherit packages;
+  };
   devShells = {
     default = pkgs.mkShell {
       packages = with pkgs; [
@@ -54,5 +57,6 @@ in
   inherit devShells;
   inherit lib;
   inherit pkgs;
+  inherit ci;
   inputs.nixpkgs = nixpkgs;
 }
