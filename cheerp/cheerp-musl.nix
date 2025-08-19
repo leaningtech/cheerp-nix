@@ -10,7 +10,7 @@ in stdenv.mkDerivation {
 
   src = filterSrc {
     root = sources.cheerp-musl;
-    include = [ "configure" "Makefile" "arch" "include" "src" "crt" "tools" ];
+    include = [ "configure" "Makefile" "arch" "include" "src" "crt" "tools" "compat" ];
   };
 
   nativeBuildInputs = [ ];
@@ -23,6 +23,8 @@ in stdenv.mkDerivation {
   installPhase = ''
     make ${install-target}
   '';
+
+  enableParallelBuild = true;
 
   meta = with lib; {
     homepage = "https://github.com/leaningtech/cheerp-compiler";
