@@ -2,11 +2,14 @@
 let
   mkPlatform = mode: {
     config =
-      if mode == "wasm" then
+      if mode == "cheerp-wasm" then
         "wasm32-unknown-none"
-      else if mode == "genericjs" then
+      else if mode == "cheerp-genericjs" then
         "wasm32-unknown-none"
-      else if mode == "wasm-wasi" then "wasm32-unknown-wasi"
+      else if mode == "cheerp-wasm-wasi" then
+        "wasm32-unknown-wasi"
+      else if mode == "wasm32-cheerpos-linux" then
+        "wasm32-unknown-linux"
       else throw "unknown mode";
     #system = "cheerp-genericjs";
     useLLVM = true;
@@ -46,14 +49,14 @@ let
       cmakeFlags = [
         "-DCMAKE_MODULE_PATH=${cheerp}/share/cmake/Modules"
         "-DCMAKE_LINKER=${cheerp}/bin/llvm-link"
-        "-DCMAKE_C_COMPILER_TARGET=cheerp-${mode}"
+        "-DCMAKE_C_COMPILER_TARGET=${mode}"
         "-DCMAKE_C_COMPILER_FRONTEND_VARIANT=GNU"
         "-DCMAKE_C_STANDARD_COMPUTED_DEFAULT=11"
         "-DCMAKE_C_COMPILER_ID_RUN=TRUE"
         "-DCMAKE_C_COMPILER_ID=Clang"
         "-DCMAKE_C_COMPILER_VERSION=16.0"
         "-DCMAKE_C_COMPILER_FORCED=FALSE"
-        "-DCMAKE_CXX_COMPILER_TARGET=cheerp-${mode}"
+        "-DCMAKE_CXX_COMPILER_TARGET=${mode}"
         "-DCMAKE_CXX_COMPILER_FRONTEND_VARIANT=GNU"
         "-DCMAKE_CXX_STANDARD_COMPUTED_DEFAULT=11"
         "-DCMAKE_CXX_COMPILER_ID_RUN=TRUE"
@@ -102,7 +105,7 @@ let
             };
             libc = null;
             extraBuildCommands = ''
-              echo "-target cheerp-${mode} -flto" > $out/nix-support/cc-cflags
+              echo "-target ${mode} -flto" > $out/nix-support/cc-cflags
               echo "" > $out/nix-support/cc-ldflags
               echo "" > $out/nix-support/add-hardening.sh
             '';
@@ -117,7 +120,8 @@ let
   };
 in
 {
-  wasm = crossPkgs "wasm";
-  genericjs = crossPkgs "genericjs";
-  wasi = crossPkgs "wasm-wasi";
+  wasm = crossPkgs "cheerp-wasm";
+  genericjs = crossPkgs "cheerp-genericjs";
+  wasi = crossPkgs "cheerp-wasm-wasi";
+  cheerpos = crossPkgs "wasm32-cheerpos-linux";
 }
