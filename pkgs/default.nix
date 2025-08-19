@@ -23,6 +23,7 @@ let
     icu = callPackage ./icu.nix { };
     harfbuzz = callPackage ./harfbuzz.nix { };
     gl4es = callPackage ./gl4es.nix { };
+    python = callPackage ./python.nix { };
   };
 in
 pkgs // {

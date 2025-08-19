@@ -1,0 +1,21 @@
+diff --git a/Modules/_decimal/libmpdec/fourstep.c b/Modules/_decimal/libmpdec/fourstep.c
+index fb173ed..2c53d17 100644
+--- a/Modules/_decimal/libmpdec/fourstep.c
++++ b/Modules/_decimal/libmpdec/fourstep.c
+@@ -138,6 +138,8 @@ ppro_size3_ntt(mpd_uint_t *x1, mpd_uint_t *x2, mpd_uint_t *x3, mpd_uint_t w3tabl
+ int
+ four_step_fnt(mpd_uint_t *a, mpd_size_t n, int modnum)
+ {
++assert(0);
++#if 0
+     mpd_size_t R = 3; /* number of rows */
+     mpd_size_t C = n / 3; /* number of columns */
+     mpd_uint_t w3table[3];
+@@ -194,6 +196,7 @@ four_step_fnt(mpd_uint_t *a, mpd_size_t n, int modnum)
+ #endif
+ 
+     return 1;
++#endif
+ }
+ 
+ /* backward transform, sign = 1; transform length = 3 * 2**n */
