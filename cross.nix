@@ -1,4 +1,4 @@
-{ lib, path, system, runCommand, bash, cheerp }:
+{ lib, path, system, runCommand, bash, cheerp, conf }:
 let
   mkPlatform = mode: {
     config =
@@ -64,8 +64,21 @@ let
         "-DCMAKE_CXX_COMPILER_VERSION=16.0"
         "-DCMAKE_CXX_COMPILER_FORCED=FALSE"
       ] ++ (args.cmakeFlags or [ ]);
-      env.CHEERP_PREFIX=cheerp;
-    }
+      CHEERP_PREFIX = cheerp;
+    } // (if conf.build == "dev" then
+      if args ? env.NIX_CFLAGS_LINK then
+        {
+          env = args.env // {
+            NIX_CFLAGS_LINK = toString args.env.NIX_CFLAGS_LINK + " -cheerp-pretty-code";
+          };
+        }
+      else
+        {
+          NIX_CFLAGS_LINK = toString (args.NIX_CFLAGS_LINK or "") + " -cheerp-pretty-code";
+        }
+    else
+      { }
+    )
   );
   crossPkgs = mode: import path {
     crossSystem = mkPlatform mode;
@@ -91,15 +104,15 @@ let
             isGNU = true;
             bintools = buildPackages.wrapBintoolsWith {
               inherit stdenvNoCC;
-              bintools = runCommand "bintools" {} ''
-                  mkdir -p $out/bin
-                  ln -s ${cheerp}/bin/llvm-ar $out/bin/ar
-                  ln -s ${cheerp}/bin/llvm-strip $out/bin/strip
-                  ln -s ${cheerp}/bin/llvm-link $out/bin/ld
-                  cat > $out/bin/ranlib << 'EOF'
-                  #!${bash}/bin/bash
-                  ${cheerp}/bin/llvm-ar s "$@"
-                  EOF
+              bintools = runCommand "bintools" { } ''
+                mkdir -p $out/bin
+                ln -s ${cheerp}/bin/llvm-ar $out/bin/ar
+                ln -s ${cheerp}/bin/llvm-strip $out/bin/strip
+                ln -s ${cheerp}/bin/llvm-link $out/bin/ld
+                cat > $out/bin/ranlib << 'EOF'
+                #!${bash}/bin/bash
+                ${cheerp}/bin/llvm-ar s "$@"
+                EOF
               '';
               libc = null;
             };
