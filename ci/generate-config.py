@@ -25,9 +25,9 @@ def generate_circleci_job(drv: Derivation) -> Dict:
                     "name": "Configure Nix",
                     "command": """
 cat \\<< 'EOF' > /etc/nix/nix.conf
-  cores = 0
+  cores = 4
   experimental-features = nix-command flakes ca-derivations
-  max-jobs = auto
+  max-jobs = 2
   sandbox = false
   sandbox-fallback = true
   substituters = https://cache.nixos.org/
