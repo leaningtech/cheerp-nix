@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Install utilities
           command: |
-            nix profile install nixpkgs#jq nixpkgs#curl nixpkgs#which nixpkgs#xxd
+            nix profile install nixpkgs#jq nixpkgs#xxd
       - run:
           name: Evaluate Build
           command: |
