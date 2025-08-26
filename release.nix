@@ -2,6 +2,8 @@ packages:
 let
   cheerpPkgs = {
     inherit (packages)
+      cheerp-llvm
+      cheerp-clang
       cheerp-compiler
       #cheerp-clangd
       cheerp-utils
