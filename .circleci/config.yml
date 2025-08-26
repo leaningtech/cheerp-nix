@@ -35,7 +35,7 @@ jobs:
           name: Evaluate Build
           command: |
             ./ci/generate-config.py > /tmp/config
-            nix copy --to file://$(pwd)/cache $(readlink -f *.drv)
+            nix copy --to file://$(pwd)/cache?compression=zstd $(readlink -f *.drv)
             CHECKSUM=$(sha256sum /tmp/config | xxd -r -p | base64 | tr '/' '_')
             jq -n --arg cs "$CHECKSUM" '{"eval-cache-key": ("nix-store-eval-" + $cs)}' > /tmp/params.json
       - save_cache:
