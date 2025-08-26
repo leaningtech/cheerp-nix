@@ -2,7 +2,15 @@
 lib.makeScope newScope (self:
 let callPackage = self.callPackage;
 in rec {
-  cheerp-compiler =
+  cheerp-llvm =
+    callPackage ./llvm.nix { };
+  cheerp-clang =
+    callPackage ./clang.nix { };
+  cheerp-compiler = symlinkJoin {
+    name = "cheerp-compiler-master";
+    paths = [ cheerp-llvm cheerp-clang ];
+  };
+  cheerp-compiler-mono =
     callPackage ./cheerp-compiler.nix { buildClangd = false; };
 
   cheerp-clangd = callPackage ./cheerp-compiler.nix { buildClangd = true; };
