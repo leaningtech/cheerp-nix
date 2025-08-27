@@ -9,9 +9,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "bb50e9f3dc30c9d9aef70a9e902a6724e642ac15",
-      "url": "https://github.com/leaningtech/cheerp-compiler/archive/bb50e9f3dc30c9d9aef70a9e902a6724e642ac15.tar.gz",
-      "hash": "1s2gsb6dx1y21z3p06466k88jxz2s9d57iwp06a8lqmx2jl475fl"
+      "revision": "0c7af22ae15c2e90552f42fc8f89bb691c12d407",
+      "url": "https://github.com/leaningtech/cheerp-compiler/archive/0c7af22ae15c2e90552f42fc8f89bb691c12d407.tar.gz",
+      "hash": "0kx46kiiykllgjckfp054f2v5kfhxjy0cvcp8bmwq7xv9rbhkcx3"
     },
     "cheerp-libs": {
       "type": "Git",
