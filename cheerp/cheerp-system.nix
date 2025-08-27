@@ -1,9 +1,10 @@
-{ lib, stdenv, cmake, ninja, cheerp, wasm, sources, filterSrc }:
+{ lib, stdenv, cmake, ninja, cheerp, wasm, sources, filterSrc, conf }:
 
 let
   name = if wasm then "cheerp-system-wasm" else "cheerp-system-js";
   toolchain =
     if wasm then "CheerpWasmToolchain.cmake" else "CheerpToolchain.cmake";
+  build-type = if conf.build == "prod" then "Release" else "Debug";
 in stdenv.mkDerivation {
   pname = name;
   version = "master";
@@ -18,7 +19,7 @@ in stdenv.mkDerivation {
   nativeBuildInputs = [ cmake ninja ];
 
   configurePhase = ''
-    cmake -B build -GNinja -DCMAKE_INSTALL_PREFIX=$out -DCMAKE_TOOLCHAIN_FILE=${cheerp}/share/cmake/Modules/${toolchain} -DCMAKE_BUILD_TYPE=Release .
+    cmake -B build -GNinja -DCMAKE_INSTALL_PREFIX=$out -DCMAKE_TOOLCHAIN_FILE=${cheerp}/share/cmake/Modules/${toolchain} -DCMAKE_BUILD_TYPE=${build-type} .
     cd build
   '';
 
