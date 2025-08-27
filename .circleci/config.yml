@@ -21,29 +21,29 @@ jobs:
               max-jobs = 2
               sandbox = false
               sandbox-fallback = true
-              substituters = https://cache.nixos.org/
               system-features = nixos-test benchmark big-parallel kvm
-              trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-              trusted-substituters = 
+              substituters = https://nix.leaningtech.com/cheerp https://cache.nixos.org/
+              trusted-public-keys = cheerp:WtaH6hNyE1jx3KqrDkTqHfub4qEBhJWZwiIuPAPqF44= lt:990XBPGBQWHGyzpLno3a5vfWo5G8O+0qlxRmrvbOQVQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
               trusted-users = root circleci
             EOF
       - run:
           name: Install utilities
           command: |
-            nix profile install nixpkgs#jq nixpkgs#xxd
+            nix profile install nixpkgs#jq nixpkgs#attic-client
+      - run:
+          name: Setup attic
+          command: |
+            attic login lt https://nix.leaningtech.com ${ATTIC_TOKEN}
       - run:
           name: Evaluate Build
           command: |
             ./ci/generate-config.py > /tmp/config
-            nix copy --to file://$(pwd)/cache?compression=zstd $(readlink -f *.drv)
-            CHECKSUM=$(sha256sum /tmp/config | xxd -r -p | base64 | tr '/' '_')
-            jq -n --arg cs "$CHECKSUM" '{"eval-cache-key": ("nix-store-eval-" + $cs)}' > /tmp/params.json
-      - save_cache:
-          key: nix-store-eval-{{ checksum "/tmp/config" }}
-          paths: ["cache"]
+      - run:
+          name: Upload to cache
+          command: |
+            attic push lt:cheerp *.drv
       - continuation/continue:
           configuration_path: /tmp/config
-          parameters: /tmp/params.json
 
 workflows:
   setup-dynamic-config:

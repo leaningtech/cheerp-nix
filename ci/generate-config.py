@@ -30,26 +30,13 @@ cat \\<< 'EOF' > /etc/nix/nix.conf
   max-jobs = 2
   sandbox = false
   sandbox-fallback = true
-  substituters = https://cache.nixos.org/
   system-features = nixos-test benchmark big-parallel kvm
-  trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-  trusted-substituters = 
+  substituters = https://nix.leaningtech.com/cheerp https://cache.nixos.org/
+  trusted-public-keys = cheerp:WtaH6hNyE1jx3KqrDkTqHfub4qEBhJWZwiIuPAPqF44= lt:990XBPGBQWHGyzpLno3a5vfWo5G8O+0qlxRmrvbOQVQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
   trusted-users = root circleci
 EOF
+nix run nixpkgs#attic-client -- login lt 'https://nix.leaningtech.com' ${ATTIC_TOKEN}
 """,
-                }
-            },
-            {
-                "restore_cache": {
-                    "keys": ["<< pipeline.parameters.eval-cache-key >>"]
-                }
-            },
-            {
-                "run": {
-                    "name": "Import eval cache",
-                    "command": f"""
-nix copy --all --from file://$(pwd)/cache
-"""
                 }
             },
             {
@@ -62,36 +49,14 @@ nix-store --add-root result --realize {drv.drv}
             },
             {
                 "run": {
-                    "name": f"Export NAR",
+                    "name": f"Upload to cache",
                     "command": f"""
-mkdir -p nars
-nix-store --export result > nars/{drv.name}.nar
+nix run nixpkgs#attic-client push lt:cheerp result*
 """
-                }
-            },
-            {
-                "save_cache": {
-                    "key": f"nix-store-{drv.drv.split('/')[-1]}",
-                    "paths": ["nars"],
                 }
             },
         ]
     }
-    cache_steps = []
-    for dep in drv.deps:
-        cache_steps.append({
-            "restore_cache": {
-                "keys": [f"nix-store-{dep.drv.split('/')[-1]}"]
-            },
-        })
-        cache_steps.append({
-            "run": {
-                "name": f"Import NAR for dep {dep.name}",
-                "command": f"nix-store --import < nars/{dep.name}.nar"
-            },
-        })
-
-    job["steps"] = job["steps"][:3] + cache_steps + job["steps"][3:]
     return job
 
 
@@ -111,12 +76,6 @@ def generate_circleci_config(drvs: Dict[str, Derivation]) -> Dict:
 
     config = {
         "version": 2.1,
-        "parameters": {
-            "eval-cache-key": {
-                "type": "string",
-                "default": "",
-            },
-        },
         "jobs": jobs,
         "workflows": {
             "build-all": {
