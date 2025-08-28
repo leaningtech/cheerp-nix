@@ -4,13 +4,13 @@
 }:
 stdenv.mkDerivation rec {
   pname = "python";
-  version = "3.12";
+  version = "3.12.11";
 
   src = fetchFromGitHub {
     owner = "python";
     repo = "cpython";
-    rev = version;
-    sha256 = "sha256-/AErqV+j3o7rq+VYB1yxzy6afAr6+2fmhPjAY6vZ6zQ=";
+    rev = "v${version}";
+    sha256 = "sha256-vDczdMOTglDf5F+8PPkixvxScDCpedJCo0eL0VJJ/8g=";
   };
   patches = [ ./python.patch ];
   NIX_CFLAGS_LINK = "-cheerp-linear-heap-size=128";
