@@ -101,4 +101,8 @@ let
     };
   };
 
-in streamImage
+in
+{
+  docker = streamImage;
+  release = import ../release.nix packages;
+}
