@@ -88,7 +88,7 @@ def generate_circleci_config(drvs: Dict[str, Derivation]) -> Dict:
 
 def get_derivations() -> List[Dict]:
     result = subprocess.run(
-               ["nix-eval-jobs", "-E", "(import ./default.nix{}).ci.release", "--gc-roots-dir", ".", "--workers", "4", "--max-memory-size", "2G", "--verbose", "--log-format", "raw"],
+               ["nix-eval-jobs", "-E", "(import ./default.nix{}).ci.release", "--gc-roots-dir", ".", "--workers", "2", "--max-memory-size", "2G", "--verbose", "--log-format", "raw"],
                stdout=subprocess.PIPE,
                text=True,
                check=True
