@@ -86,9 +86,10 @@ stdenv.mkDerivation {
   # workaround for option values with spaces
   preConfigure = ''
     cmakeFlagsArray+=(
-      "-DCMAKE_CXX_FLAGS='-Wno-gnu-line-marker -Wno-deprecated-declarations'"
-      "-DCMAKE_C_FLAGS_RELEASE='-O2 -DNDEBUG'"
-      "-DCMAKE_CXX_FLAGS_RELEASE='-O2 -DNDEBUG'"
+      -DCMAKE_CXX_FLAGS="-Wno-gnu-line-marker -Wno-deprecated-declarations"
+      -DCMAKE_C_FLAGS_RELEASE="-O2 -DNDEBUG"
+      -DCMAKE_CXX_FLAGS_RELEASE="-O2 -DNDEBUG"
+      -DLLVM_LIT_ARGS="--verbose -j''${NIX_BUILD_CORES}"
     )
   '';
   cmakeFlags = [
