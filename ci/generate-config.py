@@ -60,17 +60,21 @@ nix run nixpkgs#attic-client push lt:cheerp result*
     return job
 
 
+def get_safe_name(name: str) -> str:
+    return name.replace('.','_')
+
 def generate_circleci_config(drvs: Dict[str, Derivation]) -> Dict:
     jobs = {}
     workflow_jobs = []
 
     # Generate jobs for each package
     for drv in drvs.values():
-        jobs[drv.name] = generate_circleci_job(drv)
+        safe_name = get_safe_name(drv.name)
+        jobs[safe_name] = generate_circleci_job(drv)
 
-        job_config: Dict = {drv.name:{}}
+        job_config: Dict = {safe_name:{}}
         if drv.deps:
-            job_config[drv.name]["requires"] = [ dep.name for dep in drv.deps]
+            job_config[safe_name]["requires"] = [ get_safe_name(dep.name) for dep in drv.deps]
 
         workflow_jobs.append(job_config)
 
