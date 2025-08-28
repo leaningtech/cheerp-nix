@@ -23,6 +23,6 @@ let
       asan-tests
       ;
   };
-  sysPkgs = packages.wasi.__buildSet;
+  sysPkgs = packages.cheerpos.__buildSet;
 in
 cheerpPkgs // sysPkgs
