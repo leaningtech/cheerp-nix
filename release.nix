@@ -4,7 +4,6 @@ let
     inherit (packages)
       cheerp-llvm
       cheerp-clang
-      cheerp-compiler
       #cheerp-clangd
       cheerp-utils
       cheerp-musl-js
@@ -24,7 +23,6 @@ let
       asan-tests
       ;
   };
-  sysPkgsNestedXorg = packages.wasi.__buildSet;
-  sysPkgs = (builtins.removeAttrs sysPkgsNestedXorg [ "xorg" ]) // (builtins.removeAttrs sysPkgsNestedXorg.xorg [ "recurseForDerivations" ]);
+  sysPkgs = packages.wasi.__buildSet;
 in
 cheerpPkgs // sysPkgs
