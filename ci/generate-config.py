@@ -102,7 +102,6 @@ def get_derivations() -> List[Dict]:
         i = json.loads(line)
         if not i["isCached"]:
             items.append(i)
-    print(items)
     return items
 
 def get_all_deps(drv: str) -> List[str]:
