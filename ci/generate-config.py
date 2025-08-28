@@ -1,5 +1,5 @@
 #!/usr/bin/env nix
-#! nix shell nixpkgs#nix-eval-jobs nixpkgs#python3 --command python3
+#! nix shell github:nixos/nixpkgs/nixos-unstable#nix-eval-jobs nixpkgs#python3 --command python3
 
 from __future__ import annotations
 import json
@@ -92,14 +92,17 @@ def generate_circleci_config(drvs: Dict[str, Derivation]) -> Dict:
 
 def get_derivations() -> List[Dict]:
     result = subprocess.run(
-               ["nix-eval-jobs", "-E", "(import ./default.nix{}).ci.release", "--gc-roots-dir", ".", "--workers", "2", "--max-memory-size", "2G", "--verbose", "--log-format", "raw"],
+               ["nix-eval-jobs", "-E", "(import ./default.nix{}).ci.release", "--gc-roots-dir", ".", "--workers", "2", "--max-memory-size", "2G", "--verbose", "--log-format", "raw", "--check-cache-status"],
                stdout=subprocess.PIPE,
                text=True,
                check=True
            )
     items = []
     for line in result.stdout.strip().split('\n'):
-        items.append(json.loads(line))
+        i = json.loads(line)
+        if not i["isCached"]:
+            items.append(i)
+    print(items)
     return items
 
 def get_all_deps(drv: str) -> List[str]:
