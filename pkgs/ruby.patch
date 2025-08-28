@@ -1,0 +1,106 @@
+diff --git a/configure.ac b/configure.ac
+index 3637485..075ca37 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1295,6 +1295,7 @@ main()
+ 		AS_CASE(["$target_cpu"], [powerpc64*|arm64|aarch64], [
+ 			ac_cv_func___builtin_setjmp=no
+ 		])
++		ac_cv_func_memcmp_working=yes
+ 		],
+ [emscripten*], [LIBS="-lm -lc $LIBS"
+ 		RUBY_APPEND_OPTIONS(LDFLAGS, "-sALLOW_MEMORY_GROWTH=1")
+@@ -3035,7 +3036,6 @@ AS_IF([test "$ac_cv_header_mach_o_loader_h" = yes], [
+ AS_CASE(["$target_os"],
+ [linux* | gnu* | k*bsd*-gnu | bsdi* | kopensolaris*-gnu], [
+     AS_IF([test "$rb_cv_binary_elf" = no], [
+-	AC_MSG_ERROR(Not ELF)
+     ], [
+ 	LDFLAGS="$LDFLAGS -rdynamic"
+     ])])
+diff --git a/dir.c b/dir.c
+index b934f27..aaf2957 100644
+--- a/dir.c
++++ b/dir.c
+@@ -2620,7 +2620,8 @@ glob_dir_finish(ruby_glob_entries_t *ent, int flags)
+     }
+     else if (ent->sort.entries) {
+         for (size_t i = 0, count = ent->sort.count; i < count;) {
+-            GLOB_FREE(ent->sort.entries[i++]);
++            void* hack = ent->sort.entries[i++];
++            GLOB_FREE(hack);
+         }
+         GLOB_FREE(ent->sort.entries);
+         ent->sort.entries = NULL;
+diff --git a/dmyenc.c b/dmyenc.c
+index 4771841..50dba21 100644
+--- a/dmyenc.c
++++ b/dmyenc.c
+@@ -16,7 +16,7 @@
+ int ruby_require_internal(const char *, int);
+ 
+ void
+-Init_enc(void)
++__attribute__((weak)) Init_enc(void)
+ {
+     if (require("enc/encdb.so") == 1) {
+         require("enc/trans/transdb.so");
+diff --git a/dmyext.c b/dmyext.c
+index 66be95a..b486d95 100644
+--- a/dmyext.c
++++ b/dmyext.c
+@@ -13,6 +13,6 @@
+ //   which activates the (statically-linked) extension libraries.
+ 
+ void
+-Init_ext(void)
++__attribute__((weak)) Init_ext(void)
+ {
+ }
+diff --git a/include/ruby/internal/memory.h b/include/ruby/internal/memory.h
+index 9fc6c39..b42b24a 100644
+--- a/include/ruby/internal/memory.h
++++ b/include/ruby/internal/memory.h
+@@ -163,7 +163,7 @@ typedef uint128_t DSIZE_T;
+  * @param  v  A variable of ::VALUE type.
+  * @post   `v` is still alive.
+  */
+-#ifdef __GNUC__
++#if 0//def __GNUC__
+ #define RB_GC_GUARD(v) \
+     (*__extension__ ({ \
+         volatile VALUE *rb_gc_guarded_ptr = &(v); \
+diff --git a/parse.y b/parse.y
+index 765b4bd..416e599 100644
+--- a/parse.y
++++ b/parse.y
+@@ -490,7 +490,11 @@ typedef struct parser_string_buffer {
+                  |<---------->|
+                      token
+ */
+-struct parser_params {
++#ifdef RIPPER
++struct parser_params_ripper {
++#else
++struct parser_params_main {
++#endif
+     YYSTYPE *lval;
+     YYLTYPE *yylloc;
+ 
+diff --git a/rubyparser.h b/rubyparser.h
+index 4ab2480..49822f7 100644
+--- a/rubyparser.h
++++ b/rubyparser.h
+@@ -7,6 +7,12 @@
+ #include <stdarg.h> /* for va_list */
+ #include <assert.h>
+ 
++#ifdef RIPPER
++#define parser_params parser_params_ripper
++#else
++#define parser_params parser_params_main
++#endif
++
+ #ifdef UNIVERSAL_PARSER
+ 
+ #define rb_encoding const void
