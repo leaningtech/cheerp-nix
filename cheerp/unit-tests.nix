@@ -40,8 +40,10 @@ let
     })
     variants);
 in
-symlinkJoin
-  {
-    name = "cheerp-unit-tests";
-    paths = builtins.attrValues tests;
-  } // tests
+lib.recurseIntoAttrs (tests // {
+  all = symlinkJoin
+    {
+      name = "cheerp-unit-tests";
+      paths = builtins.attrValues tests;
+    };
+})
