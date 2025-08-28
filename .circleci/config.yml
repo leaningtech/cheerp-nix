@@ -38,6 +38,7 @@ jobs:
           name: Evaluate Build
           command: |
             ./ci/generate-config.py > /tmp/config
+            cat /tmp/config
       - run:
           name: Upload to cache
           command: |
