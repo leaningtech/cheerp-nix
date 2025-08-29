@@ -22,7 +22,7 @@
     in
     runCommand "source"
     {
-      __contentAddressed = true;
+      __contentAddressed = false;
       preferLocalBuild = true;
     } ''
       mkdir -p $out

@@ -11,7 +11,7 @@
       "submodules": false,
       "revision": "bbf6b60fde702443957ad5c8090392b21af4a8b1",
       "url": "https://github.com/leaningtech/cheerp-compiler/archive/bbf6b60fde702443957ad5c8090392b21af4a8b1.tar.gz",
-      "hash": "0x4hl1pzyk8m5ad51q2cdpfzvnnkk2gni9kfml677lh64djcxd11"
+      "hash": "sha256-IbTOZCMG0nMMrW6maJ+Y09r93W1M4FCaKhVN/2+gkHQ="
     },
     "cheerp-libs": {
       "type": "Git",
@@ -24,7 +24,7 @@
       "submodules": false,
       "revision": "ff0beb24fe8e4a6d382891dc642555e61c2bbc5c",
       "url": "https://github.com/leaningtech/cheerp-libs/archive/ff0beb24fe8e4a6d382891dc642555e61c2bbc5c.tar.gz",
-      "hash": "11pn7arpw4f55v0li501psivyh1cn9jqizy824y524q4l5xz7dzs"
+      "hash": "sha256-+rfze6EEE1E8Ecj/iGWyLEC/o74BlEjBLsURfrM69oY="
     },
     "cheerp-musl": {
       "type": "Git",
@@ -37,7 +37,7 @@
       "submodules": false,
       "revision": "71171f2a055430c8126fb98b905418a8da43813e",
       "url": "https://github.com/leaningtech/cheerp-musl/archive/71171f2a055430c8126fb98b905418a8da43813e.tar.gz",
-      "hash": "1z0cypq0j9hfyqrhs9qaz4nfvvv1sb7g4a03hsdj36jjkisvmzam"
+      "hash": "sha256-Vf26dZxSmiGbhgMo8s7SYe/tLPkKJw0z9g4mCfD1DPw="
     },
     "cheerp-utils": {
       "type": "Git",
@@ -50,7 +50,7 @@
       "submodules": false,
       "revision": "5aa9985610a2af9742333957ac33b8d9ffaf8304",
       "url": "https://github.com/leaningtech/cheerp-utils/archive/5aa9985610a2af9742333957ac33b8d9ffaf8304.tar.gz",
-      "hash": "0dxraxdgqgnj482s6chbsqsxd2nmwrjji2ds1nfqh4s1d2522mbb"
+      "hash": "sha256-a1UhimhBE4idDbqJKGXm1YrWNdYLMqMFItI+/FpXuTc="
     },
     "nix-filter": {
       "type": "Git",
@@ -63,7 +63,7 @@
       "submodules": false,
       "revision": "f7653272fd234696ae94229839a99b73c9ab7de0",
       "url": "https://github.com/numtide/nix-filter/archive/f7653272fd234696ae94229839a99b73c9ab7de0.tar.gz",
-      "hash": "1jyqf9rnqnpscyxwv5p9kzznd3bsnjsh1q23wpmwmgdmykjac5m1"
+      "hash": "sha256-oRam5PS1vcrr5UPgALW0eo1m/5/pls27Z/pabHNy2Ms="
     },
     "nixpkgs": {
       "type": "Git",
@@ -76,8 +76,21 @@
       "submodules": false,
       "revision": "b43c397f6c213918d6cfe6e3550abfe79b5d1c51",
       "url": "https://github.com/nixos/nixpkgs/archive/b43c397f6c213918d6cfe6e3550abfe79b5d1c51.tar.gz",
-      "hash": "1dkp9sxci4b4f111x0ck493fiag68qjs5c927khzcj2a5pdbsayl"
+      "hash": "sha256-1Cu92i1KSPbhPCKxoiVG5qnoRiKTgR5CcGSRyLpOd7Y="
+    },
+    "npins": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "andir",
+        "repo": "npins"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "e4683671e145c652c371b6b8ad9b0d757c88853c",
+      "url": "https://github.com/andir/npins/archive/e4683671e145c652c371b6b8ad9b0d757c88853c.tar.gz",
+      "hash": "sha256-Nu86s1xok+1EFM0J9e55hrYPgfoutEZUDBpeXReCOaY="
     }
   },
-  "version": 5
+  "version": 6
 }

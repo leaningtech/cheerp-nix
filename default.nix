@@ -1,14 +1,23 @@
-{ system ? builtins.currentSystem
-, sources ? import ./npins
-, nixpkgs ? sources.nixpkgs
-}:
+{ system ? builtins.currentSystem, ... }:
 let
+  evalSources = import ./npins;
+  nixpkgs = evalSources.nixpkgs;
   pkgs = import nixpkgs {
     inherit system;
 
     overlays = [ (import ./ccache.nix) ];
     config.allowUnfree = true;
   };
+  npins = pkgs.callPackage (evalSources.npins + "/npins.nix") { };
+  sources = builtins.mapAttrs
+    (name: path:
+      let
+        name' = if name == "nixpkgs" then "nixpkgs'" else name;
+        override = builtins.tryEval (builtins.findFile builtins.nixPath name');
+      in
+      if override.success then override.value else (path { inherit pkgs; })
+    )
+    evalSources;
   lib = import ./lib { inherit (pkgs) lib runCommand; };
   llvmPackages = pkgs.llvmPackages_17;
   ccacheClangStdenv = pkgs.ccacheStdenv.override {
@@ -29,8 +38,8 @@ let
   };
   devShells = {
     default = pkgs.mkShell {
-      packages = with pkgs; [
-        just
+      packages = [
+        pkgs.just
         npins
       ];
     };
