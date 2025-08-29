@@ -9,16 +9,8 @@ let
     config.allowUnfree = true;
   };
   npins = pkgs.callPackage (evalSources.npins + "/npins.nix") { };
-  sources = builtins.mapAttrs
-    (name: path:
-      let
-        name' = if name == "nixpkgs" then "nixpkgs'" else name;
-        override = builtins.tryEval (builtins.findFile builtins.nixPath name');
-      in
-      if override.success then override.value else (path { inherit pkgs; })
-    )
-    evalSources;
-  lib = import ./lib { inherit (pkgs) lib runCommand; };
+  lib = pkgs.callPackage ./lib { };
+  sources = lib.overridableSources evalSources;
   llvmPackages = pkgs.llvmPackages_17;
   ccacheClangStdenv = pkgs.ccacheStdenv.override {
     stdenv = llvmPackages.libcxxStdenv;
@@ -67,5 +59,6 @@ in
   inherit lib;
   inherit pkgs;
   inherit ci;
+  inherit npins;
   inputs.nixpkgs = nixpkgs;
 }
