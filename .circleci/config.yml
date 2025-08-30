@@ -39,6 +39,7 @@ jobs:
           command: |
             ./ci/generate-config.py > /tmp/config
             cat /tmp/config
+            exit 1
       - run:
           name: Upload to cache
           command: |
