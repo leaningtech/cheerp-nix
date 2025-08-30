@@ -1,5 +1,5 @@
 #!/usr/bin/env nix
-#! nix shell github:nixos/nixpkgs/nixos-unstable#nix-eval-jobs nixpkgs#python3 --command python3
+#! nix shell nixpkgs#nix-eval-jobs nixpkgs#python3 --command python3
 
 from __future__ import annotations
 import json
@@ -12,6 +12,7 @@ import subprocess
 class Derivation:
     name: str
     drv: str
+    outputs: Dict[str, str]
     deps: List[Derivation]
 
 def generate_circleci_job(drv: Derivation) -> Dict:
@@ -90,6 +91,17 @@ def generate_circleci_config(drvs: Dict[str, Derivation]) -> Dict:
 
     return config
 
+def filter_cached(drvs: Dict[str,Derivation]):
+    paths = [ i for d in drvs.values() for i in d.outputs.values()]
+    out = subprocess.run(["nix", "path-info", "--json", "--refresh", "--store", "https://nix.leaningtech.com/cheerp"] + paths, stdout=subprocess.PIPE, check=True)
+    result: Dict = json.loads(out.stdout)
+    for d in list(drvs.values()):
+        for o in d.outputs.values():
+            if result.get(o, None) == None:
+                break
+        else:
+            del drvs[d.name]
+
 def get_derivations() -> List[Dict]:
     result = subprocess.run(
                ["nix-eval-jobs", "-E", "(import ./default.nix{}).ci.release", "--gc-roots-dir", ".", "--workers", "2", "--max-memory-size", "2G", "--verbose", "--log-format", "raw", "--check-cache-status"],
@@ -100,8 +112,7 @@ def get_derivations() -> List[Dict]:
     items = []
     for line in result.stdout.strip().split('\n'):
         i = json.loads(line)
-        if not i["isCached"]:
-            items.append(i)
+        items.append(i)
     return items
 
 def get_all_deps(drv: str) -> List[str]:
@@ -116,16 +127,17 @@ def get_all_deps(drv: str) -> List[str]:
 def load_derivations() -> Dict[str, Derivation]:
     items = get_derivations()
 
-    drvs = { i["attr"]:Derivation(name=i["attr"], drv=i["drvPath"], deps=[]) for i in items }
-    drvMap = { i["drvPath"]:drvs[i["attr"]] for i in items}
-    for i in items:
-        v = drvs[i["attr"]]
-        v.deps = [ drvMap[d] for d in get_all_deps(i["drvPath"]) if d in drvMap and d != v.drv]
+    drvs = { i["attr"]:Derivation(name=i["attr"], drv=i["drvPath"], outputs=i["outputs"], deps=[]) for i in items }
+    filter_cached(drvs)
+    drvMap = { i.drv:drvs[i.name] for i in drvs.values()}
+    for i in drvs.values():
+        v = drvs[i.name]
+        v.deps = [ drvMap[d] for d in get_all_deps(i.drv) if d in drvMap and d != v.drv]
 
     return drvs
 
 def prune_graph(g: Dict[str, Derivation]) -> Dict[str, Derivation]:
-    pruned = {k:Derivation(name=v.name, drv=v.drv, deps=[]) for (k,v) in g.items()}
+    pruned = {k:Derivation(name=v.name, drv=v.drv, outputs=v.outputs, deps=[]) for (k,v) in g.items()}
     for cur in g.keys():
         for dx in g[cur].deps:
             dx_needed = True
