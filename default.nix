@@ -10,7 +10,7 @@ let
   };
   npins = pkgs.callPackage (evalSources.npins + "/npins.nix") { };
   lib = pkgs.callPackage ./lib { };
-  sources = lib.overridableSources evalSources;
+  sources = lib.overridableSources pkgs evalSources;
   llvmPackages = pkgs.llvmPackages_17;
   ccacheClangStdenv = pkgs.ccacheStdenv.override {
     stdenv = llvmPackages.libcxxStdenv;

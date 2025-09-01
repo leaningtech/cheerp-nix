@@ -1,7 +1,7 @@
-{ lib, pkgs, runCommand, callPackage }: {
+{ lib, runCommand, callPackage }: {
   filterSrc = callPackage ./filter-src.nix { };
   env = import ./env.nix;
-  overridableSources = sources:
+  overridableSources = pkgs: sources:
     builtins.mapAttrs
       (name: path:
         let
