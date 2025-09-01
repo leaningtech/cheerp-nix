@@ -43,6 +43,7 @@ nix run nixpkgs#attic-client -- login lt 'https://nix.leaningtech.com' ${ATTIC_T
             {
                 "run": {
                     "name": f"Build {drv.name}",
+                    "no_output_timeout": "20m",
                     "command": f"""
 nix-store --add-root result --realize {drv.drv}
 """
