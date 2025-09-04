@@ -1,6 +1,7 @@
 { stdenv
 , fetchFromGitHub
 , buildPackages
+, zlib
 }:
 stdenv.mkDerivation rec {
   pname = "python";
@@ -25,4 +26,5 @@ stdenv.mkDerivation rec {
   ];
 
   nativeBuildInputs = [ ];
+  buildInputs = [ zlib ];
 }
