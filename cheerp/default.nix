@@ -151,7 +151,7 @@ in rec {
 
   tests = symlinkJoin {
     name = "cheerp-tests";
-    paths = [ unit-tests asan-tests ];
+    paths = [ unit-tests.all asan-tests ];
   };
 
   cheerp-proxy = writeShellScriptBin "cheerp" ''
