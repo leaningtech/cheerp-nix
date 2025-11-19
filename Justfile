@@ -9,6 +9,8 @@ update-cheerp: fetch-cheerp
 	git add npins/sources.json
 	git commit -m "updated cheerp repos"
 
+update-repos: update-cheerp
+
 update-nixpkgs: fetch-nixpkgs
 	git add npins/sources.json flake.lock
 	git commit -m "updated deps"
