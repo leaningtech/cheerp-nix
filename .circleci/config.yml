@@ -1,54 +1,105 @@
-version: 2.1
-
-setup: true
-
-orbs:
-  continuation: circleci/continuation@1
-
+executors:
+  docker_large:
+    docker:
+    - image: nixos/nix:latest
+    resource_class: large
 jobs:
   setup:
-    docker:
-      - image: nixos/nix:latest
-    resource_class: large
+    environment:
+      CIRCLER_GIT_BRANCH: << pipeline.git.branch >>
+      CIRCLER_GIT_BRANCH_IS_DEFAULT: << pipeline.git.branch.is_default >>
+      CIRCLER_GIT_REV: << pipeline.git.revision >>
+      CIRCLER_PARAM_cheerp_compiler_branch: << pipeline.parameters.cheerp_compiler_branch
+        >>
+      CIRCLER_TRIGGER_BRANCH: << pipeline.trigger_parameters.github_app.branch >>
+      CIRCLER_TRIGGER_CHECKOUT_SHA: << pipeline.trigger_parameters.github_app.checkout_sha
+        >>
+      CIRCLER_TRIGGER_REPO_NAME: << pipeline.trigger_parameters.github_app.repo_name
+        >>
+      CIRCLER_TRIGGER_REPO_URL: << pipeline.trigger_parameters.github_app.repo_url
+        >>
+    executor: docker_large
     steps:
-      - checkout
-      - run:
-          name: Configure Nix
-          command: |
-            cat \<< 'EOF' > /etc/nix/nix.conf
-              experimental-features = nix-command flakes ca-derivations
-              cores = 4
-              max-jobs = 2
-              sandbox = false
-              sandbox-fallback = true
-              system-features = nixos-test benchmark big-parallel kvm
-              substituters = https://nix.leaningtech.com/cheerp https://cache.nixos.org/
-              trusted-public-keys = cheerp:WtaH6hNyE1jx3KqrDkTqHfub4qEBhJWZwiIuPAPqF44= lt:990XBPGBQWHGyzpLno3a5vfWo5G8O+0qlxRmrvbOQVQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-              trusted-users = root circleci
-            EOF
-      - run:
-          name: Install utilities
-          command: |
-            nix profile install nixpkgs#jq nixpkgs#attic-client
-      - run:
-          name: Setup attic
-          command: |
-            attic login lt https://nix.leaningtech.com ${ATTIC_TOKEN}
-      - run:
-          name: Evaluate Build
-          command: |
-            ./ci/generate-config.py > /tmp/config
-            cat /tmp/config
-      - run:
-          name: Upload to cache
-          command: |
-            attic push lt:cheerp *.drv
-      - continuation/continue:
-          configuration_path: /tmp/config
-
+    - run:
+        command: |
+          mkdir -p ~/.ssh
+          echo 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=
+          ' >> ~/.ssh/known_hosts
+          git clone $CIRCLE_REPOSITORY_URL --revision=$CIRCLE_SHA1 --depth 1 .
+        name: Clone and checkout repo
+        shell: /bin/sh
+    - run:
+        command: |
+          cat \<< 'EOF' >/etc/nix/nix.conf
+          experimental-features = nix-command flakes ca-derivations
+          cores = 4
+          max-jobs = 2
+          sandbox = false
+          sandbox-fallback = true
+          system-features = nixos-test benchmark big-parallel kvm
+          substituters = https://cache.nixos.org/
+          trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+          trusted-users = root circleci
+          EOF
+        name: Setup nix
+        shell: /bin/sh
+    - run:
+        command: |
+          nix run nixpkgs#attic-client -- login lt https://nix.leaningtech.com ${ATTIC_TOKEN}
+          nix run nixpkgs#attic-client -- use lt:cheerp
+        name: Setup Attic
+        shell: /bin/sh
+    - run:
+        command: |
+          env | grep CIRCLER
+          nix build github:yuri91/circler#python --out-link /tmp/python
+        name: Bootstrap shell
+        shell: /bin/sh
+    - run:
+        command: |
+          from circler.steps import cache_shell
+          cache_shell()
+        name: Cache python shell
+        shell: /tmp/python/bin/python
+    - run:
+        command: |
+          from circler.steps import update_pin_and_commit
+          update_pin_and_commit()
+        name: Update pin of trigger repo and commit
+        shell: /tmp/python/bin/python
+    - run:
+        command: |
+          from circler.steps import nix_eval_jobs
+          nix_eval_jobs('(import ./default.nix{}).ci.release')
+        name: Eval nix expression
+        shell: /tmp/python/bin/python
+    - run:
+        command: |
+          from circler.steps import cache_eval_jobs
+          cache_eval_jobs()
+        name: Cache eval jobs
+        shell: /tmp/python/bin/python
+    - run:
+        command: |
+          from circler.steps import generate_main_pipeline
+          generate_main_pipeline()
+        name: Generate main pipeline
+        shell: /tmp/python/bin/python
+    - run:
+        command: |
+          from circler.steps import continuation
+          continuation()
+        name: Trigger continuation
+        shell: /tmp/python/bin/python
+parameters:
+  cheerp_compiler_branch:
+    default: ''
+    type: string
+setup: true
+version: '2.1'
 workflows:
-  setup-dynamic-config:
-    when:
-      equal: [ << pipeline.trigger_source >>, "api" ]
+  setup:
     jobs:
-      - setup
+    - setup:
+        requires: []
+
