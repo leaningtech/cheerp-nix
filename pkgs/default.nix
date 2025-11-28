@@ -25,6 +25,7 @@ let
     gl4es = callPackage ./gl4es.nix { };
     python = callPackage ./python.nix { };
     ruby = callPackage ./ruby { };
+    e2fsprogs = callPackage ./e2fsprogs.nix { };
   };
 in
 pkgs // {
