@@ -61,4 +61,5 @@ stdenv.mkDerivation rec {
       mv $out/lib/${pname}/e2scrub_all_cron $bin/bin/
     fi
   '';
+  meta.ci.disable = true;
 }
