@@ -32,6 +32,7 @@ stdenv.mkDerivation rec {
   buildInputs = [
   ];
 
+  patches = [ ./fix-static-linking-libuuid.patch ];
   configureFlags = [
     "--disable-elf-shlibs"
     "--enable-symlink-install"
@@ -46,8 +47,11 @@ stdenv.mkDerivation rec {
     "--disable-defrag"
     "--disable-tls"
     "--disable-fuse2fs"
+    "ac_cv_func_chflags=no"
+    "ac_cv_func_backtrace=no"
+    "ac_cv_func_mallinfo=no"
+    "ac_cv_func_mallinfo2=no"
   ];
-  env.ac_cv_func_chflags = "no";
 
   doCheck = false;
 
