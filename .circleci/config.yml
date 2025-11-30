@@ -52,7 +52,7 @@ jobs:
     - run:
         command: |
           env | grep CIRCLER
-          nix build github:yuri91/circler/af4bd430cfe258b98fb84ea21f039b74abdf1610#python --out-link /tmp/python
+          nix build github:yuri91/circler/3386d435c02b818d5c8120638a211adac4cadc8d#python --out-link /tmp/python
         name: Bootstrap shell
         shell: /bin/sh
     - run:
