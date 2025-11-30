@@ -47,4 +47,6 @@ stdenv.mkDerivation rec {
   buildFlags = [ "V=1" ];
 
   nativeBuildInputs = [ autoreconfHook bison ruby_3_4 ];
+
+  meta.ci.no_output_timeout = "30m";
 }
