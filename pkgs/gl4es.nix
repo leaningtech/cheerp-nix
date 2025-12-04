@@ -16,6 +16,11 @@ stdenv.mkDerivation rec {
   };
 
   patches = [ ./gl4es.patch ];
+  # NOTE: remove once we bump version
+  postPatch = ''
+    substituteInPlace CMakeLists.txt \
+      --replace 'cmake_minimum_required(VERSION 2.8.12)' 'cmake_minimum_required(VERSION 2.8.12...3.10)'
+  '';
   cmakeFlags = [
     ''-DCMAKE_C_FLAGS="-DUSE_X11"''
   ];

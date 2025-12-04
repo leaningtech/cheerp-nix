@@ -1,4 +1,4 @@
-{ lib, stdenv, cmake, python3, llvmPackages, nodejs, cheerp, sources, filterSrc, testMode }:
+{ lib, stdenv, cmake, python3, cheerp-llvm, nodejs, cheerp, sources, filterSrc, testMode }:
 stdenv.mkDerivation {
   pname = if testMode then "cheerp-asan-tests" else "cheerp-asan";
   version = "master";
@@ -16,13 +16,13 @@ stdenv.mkDerivation {
   };
   sourceRoot = "source/compiler-rt";
 
-  nativeBuildInputs = [ cmake python3 llvmPackages.libllvm.dev nodejs ];
+  nativeBuildInputs = [ cmake python3 nodejs ];
 
   configurePhase = ''
     cmake -S . -B build \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX="$out" \
-      -DLLVM_TOOLS_BINARY_DIR="${llvmPackages.libllvm.dev}/bin/" \
+      -DLLVM_TOOLS_BINARY_DIR="${cheerp-llvm.dev}/bin/" \
       -DCMAKE_TOOLCHAIN_FILE="${cheerp}/share/cmake/Modules/CheerpWasmToolchain.cmake" \
       -C CheerpCmakeConf.cmake
     cd build

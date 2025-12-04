@@ -23,7 +23,8 @@ stdenv.mkDerivation rec {
   postPatch = ''
     substituteInPlace CMakeLists.txt \
       --replace "$"'{prefix}/'"$"'{CMAKE_INSTALL_INCLUDEDIR}' "$"'{CMAKE_INSTALL_FULL_INCLUDEDIR}' \
-      --replace "$"'{exec_prefix}/'"$"'{CMAKE_INSTALL_LIBDIR}' "$"'{CMAKE_INSTALL_FULL_LIBEDIR}'
+      --replace "$"'{exec_prefix}/'"$"'{CMAKE_INSTALL_LIBDIR}' "$"'{CMAKE_INSTALL_FULL_LIBEDIR}' \
+      --replace 'cmake_minimum_required(VERSION 2.8.10)' 'cmake_minimum_required(VERSION 3.5)'
   '';
 
   nativeBuildInputs = [ cmake ];

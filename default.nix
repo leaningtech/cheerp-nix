@@ -11,7 +11,7 @@ let
   npins = pkgs.callPackage (evalSources.npins + "/npins.nix") { };
   lib = pkgs.callPackage ./lib { };
   sources = lib.overridableSources pkgs evalSources;
-  llvmPackages = pkgs.llvmPackages_17;
+  llvmPackages = pkgs.llvmPackages_18;
   ccacheClangStdenv = pkgs.ccacheStdenv.override {
     stdenv = llvmPackages.libcxxStdenv;
     bintools = llvmPackages.bintools;
